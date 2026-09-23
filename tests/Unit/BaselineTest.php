@@ -8,7 +8,7 @@
 namespace Navas\Baseline\Tests\Unit;
 
 use Navas\Baseline\Baseline;
-use Navas\Baseline\Tests\WPMockTestCase;
+use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use WP_Mock;
 
 /**

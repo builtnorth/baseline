@@ -8,7 +8,7 @@
 namespace Navas\Baseline\Tests\Unit\MimeTypes\Lottie;
 
 use Navas\Baseline\MimeTypes\Lottie\Validate;
-use Navas\Baseline\Tests\WPMockTestCase;
+use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use WP_Mock;
 
 /**

@@ -8,7 +8,7 @@
 namespace Navas\Baseline\Tests\Unit\MimeTypes;
 
 use Navas\Baseline\MimeTypes\Capability;
-use Navas\Baseline\Tests\WPMockTestCase;
+use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use WP_Mock;
 
 /**

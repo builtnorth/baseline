@@ -8,7 +8,7 @@
 namespace Navas\Baseline\Tests\Unit\MimeTypes\JSON;
 
 use Navas\Baseline\MimeTypes\JSON\Sanitize;
-use Navas\Baseline\Tests\WPMockTestCase;
+use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use WP_Mock;
 
 /**

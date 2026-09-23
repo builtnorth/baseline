@@ -8,7 +8,7 @@
 namespace Navas\Baseline\Tests\Unit\MimeTypes\SVG;
 
 use Navas\Baseline\MimeTypes\SVG\Upload;
-use Navas\Baseline\Tests\WPMockTestCase;
+use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use WP_Mock;
 
 /**

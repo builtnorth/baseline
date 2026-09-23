@@ -7,7 +7,7 @@
 
 namespace Navas\Baseline\Tests\Unit\Utilities;
 
-use Navas\Baseline\Tests\WPMockTestCase;
+use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use Navas\Baseline\Utilities\DuplicatePost;
 use WP_Mock;
 

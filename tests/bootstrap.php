@@ -36,7 +36,25 @@ if ( $using_root_autoloader ) {
 
 // Shared WP core class stand-ins (WP_Error, WP_Query, etc.) — lives in
 // whichever vendor/ $autoloader above actually resolved to (local or root).
-require_once dirname( $autoloader ) . '/builtnorth/wp-mock-stand-ins/inc/stand-ins.php';
+$stand_ins = dirname( $autoloader ) . '/builtnorth/wp-mock-stand-ins';
+require_once $stand_ins . '/inc/stand-ins.php';
+
+// The shared WPMockTestCase base class lives in that same package. Registered by
+// hand for the same reason as the Tests namespace above: the root autoloader
+// carries a dependency's runtime `autoload` mapping, and this package is only a
+// require-dev of the suites that use it.
+spl_autoload_register(
+	static function ( string $class ) use ( $stand_ins ): void {
+		$prefix = 'BuiltNorth\\WPMockStandIns\\';
+		if ( ! str_starts_with( $class, $prefix ) ) {
+			return;
+		}
+		$file = $stand_ins . '/inc/classes/' . str_replace( '\\', '/', substr( $class, strlen( $prefix ) ) ) . '.php';
+		if ( file_exists( $file ) ) {
+			require $file;
+		}
+	}
+);
 
 // Enable Patchwork for better function mocking in namespaces
 WP_Mock::setUsePatchwork( true );

@@ -8,7 +8,7 @@
 namespace Navas\Baseline\Tests\Unit\Security;
 
 use Navas\Baseline\Security\Headers;
-use Navas\Baseline\Tests\WPMockTestCase;
+use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use WP_Mock;
 
 /**
