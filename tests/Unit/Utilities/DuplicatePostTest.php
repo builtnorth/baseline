@@ -1,0 +1,114 @@
+<?php
+/**
+ * Tests for Duplicate Post utility
+ *
+ * @package Navas\Baseline\Tests\Unit\Utilities
+ */
+
+namespace Navas\Baseline\Tests\Unit\Utilities;
+
+use Navas\Baseline\Tests\WPMockTestCase;
+use Navas\Baseline\Utilities\DuplicatePost;
+use WP_Mock;
+
+/**
+ * DuplicatePost test case
+ */
+class DuplicatePostTest extends WPMockTestCase {
+
+	/**
+	 * Test non-WP_Post input is ignored.
+	 */
+	public function test_add_duplicate_link_ignores_non_post_input() {
+		$duplicate_post = new DuplicatePost();
+		$actions        = [ 'edit' => '<a href="#">Edit</a>' ];
+
+		$result = $duplicate_post->add_duplicate_link( $actions, new \stdClass() );
+
+		$this->assertSame( $actions, $result );
+	}
+
+	/**
+	 * Test permission check safely handles invalid post type object.
+	 */
+	public function test_can_duplicate_post_returns_false_for_invalid_post_type_object() {
+		$duplicate_post = new DuplicatePost();
+
+		WP_Mock::userFunction( 'get_post_type_object' )
+			->with( 'page' )
+			->andReturn( false );
+
+		$method = new \ReflectionMethod( DuplicatePost::class, 'can_duplicate_post' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke(
+			$duplicate_post,
+			(object) [
+				'post_type' => 'page',
+			]
+		);
+
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * Test permission check uses the per-object edit_post capability, not the
+	 * blanket edit_posts type capability, so ownership is respected.
+	 */
+	public function test_can_duplicate_post_checks_per_object_capability() {
+		$duplicate_post = new DuplicatePost();
+		$post            = (object) [
+			'ID'        => 42,
+			'post_type' => 'post',
+		];
+
+		WP_Mock::userFunction( 'get_post_type_object' )
+			->with( 'post' )
+			->andReturn( (object) [ 'cap' => (object) [ 'edit_posts' => 'edit_posts' ] ] );
+
+		WP_Mock::userFunction( 'current_user_can' )
+			->with( 'edit_post', 42 )
+			->andReturn( false );
+
+		WP_Mock::onFilter( 'navas_baseline_can_duplicate_post' )
+			->with( false, $post )
+			->reply( false );
+
+		$method = new \ReflectionMethod( DuplicatePost::class, 'can_duplicate_post' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke( $duplicate_post, $post );
+
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * Test a user who can edit the specific post is allowed to duplicate it.
+	 */
+	public function test_can_duplicate_post_allows_when_user_can_edit_post() {
+		$duplicate_post = new DuplicatePost();
+		$post            = (object) [
+			'ID'        => 7,
+			'post_type' => 'post',
+		];
+
+		WP_Mock::userFunction( 'get_post_type_object' )
+			->with( 'post' )
+			->andReturn( (object) [ 'cap' => (object) [ 'edit_posts' => 'edit_posts' ] ] );
+
+		WP_Mock::userFunction( 'current_user_can' )
+			->with( 'edit_post', 7 )
+			->andReturn( true );
+
+		WP_Mock::onFilter( 'navas_baseline_can_duplicate_post' )
+			->with( true, $post )
+			->reply( true );
+
+		$method = new \ReflectionMethod( DuplicatePost::class, 'can_duplicate_post' );
+		$method->setAccessible( true );
+
+		$result = $method->invoke( $duplicate_post, $post );
+
+		$this->assertTrue( $result );
+	}
+}

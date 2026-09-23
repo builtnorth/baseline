@@ -1,0 +1,31 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Is this a pre-release?'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  release:
+    uses: builtnorth/.github/.github/workflows/composer-package-release.yml@main
+    with:
+      package-name: 'baseline'
+      package-display-name: 'WP Baseline'
+      composer-namespace: 'navas/baseline'
+      version: ${{ inputs.version }}
+      prerelease: ${{ inputs.prerelease }}
+      composer-repository-profile: coding-standards-only
+    secrets: inherit
+    permissions:
+      contents: write
