@@ -21,7 +21,7 @@ jobs:
     uses: builtnorth/.github/.github/workflows/composer-package-release.yml@main
     with:
       package-name: 'baseline'
-      package-display-name: 'WP Baseline'
+      package-display-name: 'Baseline'
       composer-namespace: 'navas/baseline'
       version: ${{ inputs.version }}
       prerelease: ${{ inputs.prerelease }}
