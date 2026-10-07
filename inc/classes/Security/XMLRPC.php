@@ -24,8 +24,10 @@ class XMLRPC
 	public function init()
 	{
 		if ((bool) apply_filters('navas_baseline_disable_xmlrpc', true)) {
-			add_filter('wp_xmlrpc_server_class', [$this, 'disabled_server_class']);
-			add_filter('xmlrpc_enabled', '__return_false');
+			// Last, so a later filter can't turn XML-RPC back on.
+			add_filter('wp_xmlrpc_server_class', [$this, 'disabled_server_class'], PHP_INT_MAX);
+			add_filter('xmlrpc_enabled', '__return_false', PHP_INT_MAX);
+			add_action('init', [$this, 'refuse_xmlrpc_request'], 0);
 			add_filter('pre_update_option_enable_xmlrpc', '__return_false');
 			add_filter('pre_option_enable_xmlrpc', '__return_zero');
 			add_filter('mod_rewrite_rules', [$this, 'block_xmlrpc_requests']);
@@ -45,15 +47,34 @@ class XMLRPC
 	}
 
 	/**
-	 * Blocks XML-RPC requests
+	 * Refuse xmlrpc.php on init.
+	 *
+	 * Core answers `xmlrpc.php?rsd` itself after WordPress loads, before it
+	 * asks for the server class, so the endpoint would still be advertised.
+	 */
+	public function refuse_xmlrpc_request(): void
+	{
+		if (defined('XMLRPC_REQUEST') && XMLRPC_REQUEST) {
+			(new DisabledXmlrpcServer())->serve_request();
+		}
+	}
+
+	/**
+	 * Blocks XML-RPC requests (Apache 2.4 `Require`; 2.2 syntax only where
+	 * mod_authz_core is missing, since 2.4 without mod_access_compat 500s on it).
 	 */
 	public function block_xmlrpc_requests($rules)
 	{
 		return "
 		# Block XML-RPC requests
 		<Files xmlrpc.php>
-			Order Deny,Allow
-			Deny from all
+			<IfModule mod_authz_core.c>
+				Require all denied
+			</IfModule>
+			<IfModule !mod_authz_core.c>
+				Order Deny,Allow
+				Deny from all
+			</IfModule>
 		</Files>\n\n" . $rules;
 	}
 

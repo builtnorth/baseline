@@ -26,4 +26,31 @@ class XMLRPCTest extends WPMockTestCase {
 		$this->assertSame( DisabledXmlrpcServer::class, $class );
 		$this->assertTrue( method_exists( new $class(), 'serve_request' ) );
 	}
+
+	/**
+	 * The off switch runs last, so a later filter can't turn XML-RPC back on,
+	 * and xmlrpc.php is refused on init, before core answers ?rsd itself.
+	 */
+	public function test_init_hooks_run_last_and_refuse_rsd(): void {
+		$xmlrpc = new XMLRPC();
+		$GLOBALS['navas_baseline_test_hooks'] = [];
+
+		$xmlrpc->init();
+
+		$hooks = $GLOBALS['navas_baseline_test_hooks'];
+		$this->assertContains( [ 'filter', 'wp_xmlrpc_server_class', [ $xmlrpc, 'disabled_server_class' ], PHP_INT_MAX ], $hooks );
+		$this->assertContains( [ 'filter', 'xmlrpc_enabled', '__return_false', PHP_INT_MAX ], $hooks );
+		$this->assertContains( [ 'action', 'init', [ $xmlrpc, 'refuse_xmlrpc_request' ], 0 ], $hooks );
+	}
+
+	/**
+	 * Apache 2.4 denies with Require; Order/Deny only where mod_authz_core is missing.
+	 */
+	public function test_htaccess_block_works_on_apache_2_4(): void {
+		$rules = ( new XMLRPC() )->block_xmlrpc_requests( '' );
+
+		$this->assertStringContainsString( '<IfModule mod_authz_core.c>', $rules );
+		$this->assertStringContainsString( 'Require all denied', $rules );
+		$this->assertStringContainsString( '<IfModule !mod_authz_core.c>', $rules );
+	}
 }

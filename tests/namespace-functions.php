@@ -25,8 +25,9 @@ namespace Navas\Baseline\Cleanup {
 // Security namespace functions
 namespace Navas\Baseline\Security {
 	if (!function_exists(__NAMESPACE__ . '\add_action')) {
-		function add_action() { return null; }
-		function add_filter() { return null; }
+		// Hook registrations are recorded so tests can assert them.
+		function add_action(...$args) { $GLOBALS['navas_baseline_test_hooks'][] = ['action', ...$args]; return null; }
+		function add_filter(...$args) { $GLOBALS['navas_baseline_test_hooks'][] = ['filter', ...$args]; return null; }
 		function apply_filters() { return func_get_arg(1); }
 		function is_user_logged_in() { return false; }
 		function is_admin() { return false; }
