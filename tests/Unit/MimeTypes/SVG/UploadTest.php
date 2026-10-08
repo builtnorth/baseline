@@ -103,4 +103,55 @@ class UploadTest extends WPMockTestCase {
 
 		$this->assertSame( 'image/svg+xml', $result['svg'] );
 	}
+
+	/**
+	 * Test SVG dimensions come from numeric width and height attributes.
+	 */
+	public function test_get_dimensions_uses_width_and_height() {
+		$svg = '<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" width="120px" height="40.4" viewBox="0 0 60 20" stroke-width="2"></svg>';
+
+		$this->assertSame( [ 'width' => 120, 'height' => 40 ], Upload::get_dimensions( $svg ) );
+	}
+
+	/**
+	 * Test the viewBox is used when width or height is missing or relative.
+	 */
+	public function test_get_dimensions_falls_back_to_view_box() {
+		$this->assertSame( [ 'width' => 240, 'height' => 40 ], Upload::get_dimensions( '<svg viewBox="0 0 240 40"></svg>' ) );
+		$this->assertSame( [ 'width' => 52, 'height' => 40 ], Upload::get_dimensions( '<svg width="100%" height="2em" viewBox="0,0,52,40"></svg>' ) );
+	}
+
+	/**
+	 * Test no dimensions are returned when the SVG has no usable size.
+	 */
+	public function test_get_dimensions_returns_null_without_size() {
+		$this->assertNull( Upload::get_dimensions( '<svg xmlns="http://www.w3.org/2000/svg"></svg>' ) );
+		$this->assertNull( Upload::get_dimensions( '<svg viewBox="0 0 0 40"></svg>' ) );
+		$this->assertNull( Upload::get_dimensions( 'not an svg' ) );
+	}
+
+	/**
+	 * Test an uploaded SVG gets its dimensions added to the metadata.
+	 */
+	public function test_add_svg_dimensions_sets_width_and_height() {
+		$file = tempnam( sys_get_temp_dir(), 'svg' );
+		file_put_contents( $file, '<svg viewBox="0 0 88 40"></svg>' );
+
+		WP_Mock::userFunction( 'get_post_mime_type' )->with( 12 )->andReturn( 'image/svg+xml' );
+		WP_Mock::userFunction( 'get_attached_file' )->with( 12 )->andReturn( $file );
+
+		$result = ( new Upload() )->add_svg_dimensions( [ 'filesize' => 31 ], 12 );
+		unlink( $file );
+
+		$this->assertSame( [ 'filesize' => 31, 'width' => 88, 'height' => 40 ], $result );
+	}
+
+	/**
+	 * Test metadata of other file types is left alone.
+	 */
+	public function test_add_svg_dimensions_ignores_other_types() {
+		WP_Mock::userFunction( 'get_post_mime_type' )->with( 13 )->andReturn( 'application/pdf' );
+
+		$this->assertSame( [ 'filesize' => 10 ], ( new Upload() )->add_svg_dimensions( [ 'filesize' => 10 ], 13 ) );
+	}
 }
