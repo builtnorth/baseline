@@ -11,7 +11,7 @@
  * @since 2.1.0
  */
 
-namespace Navas\Baseline\Abstracts;
+namespace Siratik\Baseline\Abstracts;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;

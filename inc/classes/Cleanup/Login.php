@@ -11,7 +11,7 @@
  * @since 2.0.0
  */
 
-namespace Navas\Baseline\Cleanup;
+namespace Siratik\Baseline\Cleanup;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;

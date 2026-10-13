@@ -11,7 +11,7 @@
  * @since 1.0.0
  */
 
-namespace Navas\Baseline\Security;
+namespace Siratik\Baseline\Security;
 
 defined('ABSPATH') || defined('WP_CLI') || exit;
 
@@ -24,12 +24,12 @@ class RestAPI
 	public function init()
 	{
 
-		if ((bool) apply_filters('navas_baseline_disable_user_rest_endpoints', true)) {
+		if ((bool) apply_filters('siratik_baseline_disable_user_rest_endpoints', true)) {
 			// Remove users endpoint for non-authenticated users
 			add_filter('rest_endpoints', [$this, 'restrict_user_endpoints']);
 
 			// Optionally disable the users endpoint completely
-			if ((bool) apply_filters('navas_baseline_disable_user_rest_endpoints_completely', false)) {
+			if ((bool) apply_filters('siratik_baseline_disable_user_rest_endpoints_completely', false)) {
 				add_filter('rest_endpoints', [$this, 'disable_user_endpoints_completely']);
 			}
 		}

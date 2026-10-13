@@ -11,7 +11,7 @@
  * @since 2.1.0
  */
 
-namespace Navas\Baseline\Security;
+namespace Siratik\Baseline\Security;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -38,7 +38,7 @@ class Login
 	 */
 	public function init()
 	{
-		if ((bool) apply_filters('navas_baseline_login_security', true)) {
+		if ((bool) apply_filters('siratik_baseline_login_security', true)) {
 			add_filter('authenticate', [$this, 'prevent_username_login'], 30, 3);
 			add_filter('wp_login_errors', [$this, 'prevent_login_field_repopulation'], 10, 2);
 			add_filter('login_errors', [$this, 'generic_login_error']);
@@ -107,7 +107,7 @@ class Login
 			return $this->username_login_error_message();
 		}
 
-		return __('The email address or password you entered is incorrect.', 'navas-baseline');
+		return __('The email address or password you entered is incorrect.', 'siratik-baseline');
 	}
 
 	/**
@@ -126,7 +126,7 @@ class Login
 	public function filter_login_username_label($translation, $text, $domain)
 	{
 		if ($domain === 'default' && $text === 'Username or Email Address') {
-			return __('Email Address', 'navas-baseline');
+			return __('Email Address', 'siratik-baseline');
 		}
 
 		return $translation;
@@ -137,7 +137,7 @@ class Login
 	 */
 	public function customize_login_form(): void
 	{
-		$placeholder = wp_json_encode(__('Email address', 'navas-baseline'));
+		$placeholder = wp_json_encode(__('Email address', 'siratik-baseline'));
 
 		wp_add_inline_script(
 			'login',
@@ -158,6 +158,6 @@ class Login
 	 */
 	private function username_login_error_message(): string
 	{
-		return __('Please sign in with your email address, not a username.', 'navas-baseline');
+		return __('Please sign in with your email address, not a username.', 'siratik-baseline');
 	}
 }

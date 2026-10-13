@@ -11,7 +11,7 @@
  * @since 2.0.0
  */
 
-namespace Navas\Baseline\Comments;
+namespace Siratik\Baseline\Comments;
 
 class Blocks
 {
@@ -21,7 +21,7 @@ class Blocks
 	public function init()
 	{
 		// Check if comments should be disabled
-		if (!apply_filters('navas_baseline_disable_comments', false)) {
+		if (!apply_filters('siratik_baseline_disable_comments', false)) {
 			return;
 		}
 

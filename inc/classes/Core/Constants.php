@@ -2,12 +2,12 @@
 /**
  * Package-wide constants.
  *
- * @package Navas\Baseline
+ * @package Siratik\Baseline
  */
 
 declare(strict_types=1);
 
-namespace Navas\Baseline\Core;
+namespace Siratik\Baseline\Core;
 
 defined('ABSPATH') || defined('WP_CLI') || exit;
 
@@ -29,7 +29,7 @@ final class Constants
 	 * Includes the trailing underscore so callers can concatenate directly:
 	 * `Constants::HOOK_PREFIX . 'disable_comments'`.
 	 */
-	public const HOOK_PREFIX = 'navas_baseline_';
+	public const HOOK_PREFIX = 'siratik_baseline_';
 
 	/**
 	 * Build a fully-qualified hook name.

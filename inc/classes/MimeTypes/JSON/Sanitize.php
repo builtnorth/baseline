@@ -11,9 +11,9 @@
  * @since 2.3.0
  */
 
-namespace Navas\Baseline\MimeTypes\JSON;
+namespace Siratik\Baseline\MimeTypes\JSON;
 
-use Navas\Baseline\MimeTypes\Capability;
+use Siratik\Baseline\MimeTypes\Capability;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -27,7 +27,7 @@ class Sanitize
 	{
 		// Structural + capability check runs by default when JSON uploads
 		// are enabled. Sites can opt out with __return_false.
-		if (apply_filters('navas_baseline_sanitize_json_uploads', true)) {
+		if (apply_filters('siratik_baseline_sanitize_json_uploads', true)) {
 			add_filter('wp_handle_upload_prefilter', [$this, 'sanitize_json_files']);
 		}
 	}
@@ -64,20 +64,20 @@ class Sanitize
 		}
 
 		if (!Capability::current_user_can_upload('json')) {
-			$file['error'] = __('You do not have permission to upload JSON files.', 'navas-baseline');
+			$file['error'] = __('You do not have permission to upload JSON files.', 'siratik-baseline');
 			return $file;
 		}
 
 		$tmp_name = (string) ($file['tmp_name'] ?? '');
 		if ('' === $tmp_name || !is_readable($tmp_name)) {
-			$file['error'] = __('Could not read JSON file.', 'navas-baseline');
+			$file['error'] = __('Could not read JSON file.', 'siratik-baseline');
 			return $file;
 		}
 
 		$content = file_get_contents($tmp_name);
 
 		if ($content === false) {
-			$file['error'] = __('Could not read JSON file.', 'navas-baseline');
+			$file['error'] = __('Could not read JSON file.', 'siratik-baseline');
 			return $file;
 		}
 
@@ -85,7 +85,7 @@ class Sanitize
 		json_decode($content, true);
 
 		if (json_last_error() !== JSON_ERROR_NONE) {
-			$file['error'] = __('Invalid JSON file format.', 'navas-baseline');
+			$file['error'] = __('Invalid JSON file format.', 'siratik-baseline');
 			return $file;
 		}
 

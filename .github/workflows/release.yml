@@ -22,7 +22,7 @@ jobs:
     with:
       package-name: 'baseline'
       package-display-name: 'Baseline'
-      composer-namespace: 'navas/baseline'
+      composer-namespace: 'siratik/baseline'
       version: ${{ inputs.version }}
       prerelease: ${{ inputs.prerelease }}
       composer-repository-profile: coding-standards-only

@@ -5,11 +5,11 @@
  * This file creates stub functions in the namespaces used by this package's classes.
  * These stubs will be replaced by WP_Mock during testing.
  * 
- * @package Navas\Baseline\Tests
+ * @package Siratik\Baseline\Tests
  */
 
 // Cleanup namespace functions
-namespace Navas\Baseline\Cleanup {
+namespace Siratik\Baseline\Cleanup {
 	if (!function_exists(__NAMESPACE__ . '\remove_action')) {
 		function remove_action() { return null; }
 		function remove_filter() { return null; }
@@ -23,11 +23,11 @@ namespace Navas\Baseline\Cleanup {
 }
 
 // Security namespace functions
-namespace Navas\Baseline\Security {
+namespace Siratik\Baseline\Security {
 	if (!function_exists(__NAMESPACE__ . '\add_action')) {
 		// Hook registrations are recorded so tests can assert them.
-		function add_action(...$args) { $GLOBALS['navas_baseline_test_hooks'][] = ['action', ...$args]; return null; }
-		function add_filter(...$args) { $GLOBALS['navas_baseline_test_hooks'][] = ['filter', ...$args]; return null; }
+		function add_action(...$args) { $GLOBALS['siratik_baseline_test_hooks'][] = ['action', ...$args]; return null; }
+		function add_filter(...$args) { $GLOBALS['siratik_baseline_test_hooks'][] = ['filter', ...$args]; return null; }
 		function apply_filters() { return func_get_arg(1); }
 		function is_user_logged_in() { return false; }
 		function is_admin() { return false; }
@@ -35,7 +35,7 @@ namespace Navas\Baseline\Security {
 }
 
 // MimeTypes namespace functions
-namespace Navas\Baseline\MimeTypes {
+namespace Siratik\Baseline\MimeTypes {
 	if (!function_exists(__NAMESPACE__ . '\add_filter')) {
 		function add_filter() { return null; }
 		function apply_filters() { return func_get_arg(1); }
@@ -43,7 +43,7 @@ namespace Navas\Baseline\MimeTypes {
 }
 
 // MimeTypes\SVG namespace functions
-namespace Navas\Baseline\MimeTypes\SVG {
+namespace Siratik\Baseline\MimeTypes\SVG {
 	if (!function_exists(__NAMESPACE__ . '\add_filter')) {
 		function add_filter() { return null; }
 		function current_user_can() { return false; }
@@ -53,7 +53,7 @@ namespace Navas\Baseline\MimeTypes\SVG {
 }
 
 // Utilities namespace functions
-namespace Navas\Baseline\Utilities {
+namespace Siratik\Baseline\Utilities {
 	if (!function_exists(__NAMESPACE__ . '\add_action')) {
 		function add_action() { return null; }
 		function add_filter() { return null; }
@@ -63,7 +63,7 @@ namespace Navas\Baseline\Utilities {
 }
 
 // Main namespace functions
-namespace Navas\Baseline {
+namespace Siratik\Baseline {
 	if (!function_exists(__NAMESPACE__ . '\apply_filters')) {
 		function apply_filters() { return func_get_arg(1); }
 	}

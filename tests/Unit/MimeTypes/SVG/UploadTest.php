@@ -2,12 +2,12 @@
 /**
  * Tests for SVG Upload handling
  *
- * @package Navas\Baseline\Tests\Unit\MimeTypes\SVG
+ * @package Siratik\Baseline\Tests\Unit\MimeTypes\SVG
  */
 
-namespace Navas\Baseline\Tests\Unit\MimeTypes\SVG;
+namespace Siratik\Baseline\Tests\Unit\MimeTypes\SVG;
 
-use Navas\Baseline\MimeTypes\SVG\Upload;
+use Siratik\Baseline\MimeTypes\SVG\Upload;
 use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use WP_Mock;
 
@@ -70,7 +70,7 @@ class UploadTest extends WPMockTestCase {
 		$upload = new Upload();
 		$mimes  = [ 'jpg' => 'image/jpeg' ];
 
-		WP_Mock::onFilter( 'navas_baseline_mime_upload_capability' )
+		WP_Mock::onFilter( 'siratik_baseline_mime_upload_capability' )
 			->with( 'manage_options', 'svg' )
 			->reply( 'manage_options' );
 
@@ -91,7 +91,7 @@ class UploadTest extends WPMockTestCase {
 		$upload = new Upload();
 		$mimes  = [ 'jpg' => 'image/jpeg' ];
 
-		WP_Mock::onFilter( 'navas_baseline_mime_upload_capability' )
+		WP_Mock::onFilter( 'siratik_baseline_mime_upload_capability' )
 			->with( 'manage_options', 'svg' )
 			->reply( 'manage_options' );
 

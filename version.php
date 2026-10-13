@@ -7,7 +7,7 @@
  * cannot live behind a class constant. Written by the release workflow's
  * version-stamping step.
  *
- * @package Navas\Baseline
+ * @package Siratik\Baseline
  */
 
 return '0.1.0';

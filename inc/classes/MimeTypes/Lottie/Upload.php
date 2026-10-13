@@ -11,9 +11,9 @@
  * @since 2.3.0
  */
 
-namespace Navas\Baseline\MimeTypes\Lottie;
+namespace Siratik\Baseline\MimeTypes\Lottie;
 
-use Navas\Baseline\MimeTypes\Capability;
+use Siratik\Baseline\MimeTypes\Capability;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;

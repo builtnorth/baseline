@@ -7,13 +7,13 @@
  * @since 2.0.0
  */
 
-namespace Navas\Baseline;
+namespace Siratik\Baseline;
 
-use Navas\Baseline\Cleanup\Init as CleanupInit;
-use Navas\Baseline\Comments\Init as CommentsInit;
-use Navas\Baseline\Security\Init as SecurityInit;
-use Navas\Baseline\MimeTypes\Init as MimeTypesInit;
-use Navas\Baseline\Utilities\Init as UtilitiesInit;
+use Siratik\Baseline\Cleanup\Init as CleanupInit;
+use Siratik\Baseline\Comments\Init as CommentsInit;
+use Siratik\Baseline\Security\Init as SecurityInit;
+use Siratik\Baseline\MimeTypes\Init as MimeTypesInit;
+use Siratik\Baseline\Utilities\Init as UtilitiesInit;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -24,7 +24,7 @@ defined('ABSPATH') || defined('WP_CLI') || exit;
  * Named for what it is rather than for its role. `App` is the name every
  * consuming plugin and theme uses for its own root class, so importing this
  * package's entry point forced an alias at the call site — Polaris core's
- * `Dependencies` carried `use Navas\Baseline\App as Baseline;`,
+ * `Dependencies` carried `use Siratik\Baseline\App as Baseline;`,
  * aliasing it to this very name alongside two other packages' `App` classes,
  * all three in the same file.
  *

@@ -20,12 +20,12 @@ changes land without deprecation cycles until 1.0.
 
 This library is meant to be dropped into a theme or plugin via composer.
 
-1. In your WordPress project directory, run: `composer require navas/baseline`.
+1. In your WordPress project directory, run: `composer require siratik/baseline`.
 2. In your main plugin file or theme's functions.php, add:
 
 ```php
-if (class_exists('Navas\Baseline\Baseline')) {
-    $baseline = Navas\Baseline\Baseline::instance();
+if (class_exists('Siratik\Baseline\Baseline')) {
+    $baseline = Siratik\Baseline\Baseline::instance();
     $baseline->boot();
 }
 ```
@@ -37,7 +37,7 @@ if (class_exists('Navas\Baseline\Baseline')) {
 Comments remain enabled by default. To disable them, set this filter to return true:
 
 ```php
-add_filter('navas_baseline_disable_comments', '__return_true');
+add_filter('siratik_baseline_disable_comments', '__return_true');
 ```
 
 When comments are disabled, the package comprehensively removes all comment functionality:
@@ -75,7 +75,7 @@ When comments are disabled, the package comprehensively removes all comment func
 By default the "Howdy" text is removed from the admin bar. You can customize this and add your own text using the following filter:
 
 ```php
-add_filter('navas_baseline_howdy_text', function ($text) {
+add_filter('siratik_baseline_howdy_text', function ($text) {
     return 'Hey,';
 });
 ```
@@ -85,7 +85,7 @@ add_filter('navas_baseline_howdy_text', function ($text) {
 By default the WP logo, search, and updates nodes are removed from the admin bar. They can be re-enabled using the following filter:
 
 ```php
-add_filter('navas_baseline_clean_admin_bar', '__return_false');
+add_filter('siratik_baseline_clean_admin_bar', '__return_false');
 ```
 
 ### Dashboard Widgets
@@ -93,7 +93,7 @@ add_filter('navas_baseline_clean_admin_bar', '__return_false');
 Most core dashboard widgets are removed. They can be re-enabled using the following filter:
 
 ```php
-add_filter('navas_baseline_remove_dashboard_widgets', '__return_false');
+add_filter('siratik_baseline_remove_dashboard_widgets', '__return_false');
 ```
 
 ### Emojis
@@ -101,7 +101,7 @@ add_filter('navas_baseline_remove_dashboard_widgets', '__return_false');
 Emojis are disabled. They can be re-enabled using the following filter:
 
 ```php
-add_filter('navas_baseline_disable_emojis', '__return_false');
+add_filter('siratik_baseline_disable_emojis', '__return_false');
 ```
 
 ### Auto Update Emails
@@ -109,7 +109,7 @@ add_filter('navas_baseline_disable_emojis', '__return_false');
 Auto update emails are disabled. Additionally, the from name in the email is customized based on the site name. This functionality can be reverted back to the default by using the filter:
 
 ```php
-add_filter('navas_baseline_disable_update_emails', '__return_false');
+add_filter('siratik_baseline_disable_update_emails', '__return_false');
 ```
 
 ### Asset Version Numbering
@@ -118,7 +118,7 @@ Wordpress adds a version query argument to all enqueued assets by default. This 
 
 ```php
 define('YOUR_THEME_VERSION', '1.2.9');
-add_filter('navas_baseline_asset_version_constant', function () {
+add_filter('siratik_baseline_asset_version_constant', function () {
     return 'YOUR_THEME_VERSION';
 });
 ```
@@ -135,14 +135,14 @@ Security headers are implemented by default for enhanced security. These include
 To disable all security headers:
 
 ```php
-add_filter('navas_baseline_enable_security_headers', '__return_false');
+add_filter('siratik_baseline_enable_security_headers', '__return_false');
 ```
 
 To modify specific headers or CSP rules, use these filters:
 
 ```php
 // Modify security headers
-add_filter('navas_baseline_security_headers', function($headers) {
+add_filter('siratik_baseline_security_headers', function($headers) {
     // Customize headers
     $headers['X-Frame-Options'] = 'DENY';
     return $headers;
@@ -164,7 +164,7 @@ WordPress normally repopulates the login field when the submitted email exists b
 To disable login security enhancements, use the following filter:
 
 ```php
-add_filter('navas_baseline_login_security', '__return_false');
+add_filter('siratik_baseline_login_security', '__return_false');
 ```
 
 ### REST API User Endpoints
@@ -172,7 +172,7 @@ add_filter('navas_baseline_login_security', '__return_false');
 REST API user endpoints are restricted to users with the `list_users` capability by default. To disable this restriction and make the user endpoint publicly accessible again use this filter:
 
 ```php
-add_filter('navas_baseline_disable_user_rest_endpoints', '__return_false');
+add_filter('siratik_baseline_disable_user_rest_endpoints', '__return_false');
 ```
 
 ### Author Enumeration
@@ -180,7 +180,7 @@ add_filter('navas_baseline_disable_user_rest_endpoints', '__return_false');
 Requests like `?author=2` are blocked with a 404 by default for anyone without the `list_users` capability, instead of being redirected to `/author/username/` and revealing a valid username. Author archive URLs themselves (`/author/username/`) are unaffected. To disable this:
 
 ```php
-add_filter('navas_baseline_block_author_enumeration', '__return_false');
+add_filter('siratik_baseline_block_author_enumeration', '__return_false');
 ```
 
 ### XMLRPC
@@ -188,7 +188,7 @@ add_filter('navas_baseline_block_author_enumeration', '__return_false');
 XMLRPC is disabled by default. To re-enable it, use the following filter:
 
 ```php
-add_filter('navas_baseline_disable_xmlrpc', '__return_false');
+add_filter('siratik_baseline_disable_xmlrpc', '__return_false');
 ```
 
 ### SVG Support
@@ -198,7 +198,7 @@ Adds support for SVG uploads. SVGs are automatically sanitized upon upload using
 To disable SVG support, use the following filter:
 
 ```php
-add_filter('navas_baseline_enable_svg_uploads', '__return_false');
+add_filter('siratik_baseline_enable_svg_uploads', '__return_false');
 ```
 
 ### Additional MIME Types
@@ -208,7 +208,7 @@ Support for JSON and Lottie file uploads is available but disabled by default fo
 To enable JSON uploads:
 
 ```php
-add_filter('navas_baseline_enable_json_uploads', '__return_true');
+add_filter('siratik_baseline_enable_json_uploads', '__return_true');
 ```
 
 JSON uploads are checked for well-formed structure by default (and the
@@ -222,13 +222,13 @@ type so a spoofed Content-Type cannot skip the check.
 To disable the structural check (not recommended):
 
 ```php
-add_filter('navas_baseline_sanitize_json_uploads', '__return_false');
+add_filter('siratik_baseline_sanitize_json_uploads', '__return_false');
 ```
 
 To enable Lottie uploads:
 
 ```php
-add_filter('navas_baseline_enable_lottie_uploads', '__return_true');
+add_filter('siratik_baseline_enable_lottie_uploads', '__return_true');
 ```
 
 Lottie validation runs automatically once Lottie uploads are enabled
@@ -245,13 +245,13 @@ non-JSON `.lottie` uploads are rejected (fails closed).
 To disable Lottie validation:
 
 ```php
-add_filter('navas_baseline_validate_lottie_uploads', '__return_false');
+add_filter('siratik_baseline_validate_lottie_uploads', '__return_false');
 ```
 
 To customize Lottie file size limit (default: 10MB):
 
 ```php
-add_filter('navas_baseline_lottie_max_file_size', function() {
+add_filter('siratik_baseline_lottie_max_file_size', function() {
     return 5 * 1024 * 1024; // 5MB
 });
 ```
@@ -268,7 +268,7 @@ the mime type some other way can't bypass it.
 To allow broader access (e.g. Authors or Editors uploading SVGs):
 
 ```php
-add_filter('navas_baseline_mime_upload_capability', function ($capability, $mime_key) {
+add_filter('siratik_baseline_mime_upload_capability', function ($capability, $mime_key) {
     // $mime_key is one of 'svg', 'json', 'lottie'.
     if ('svg' === $mime_key) {
         return 'upload_files';
@@ -289,19 +289,19 @@ not someone else's. To customize or disable:
 
 ```php
 // Disable duplicate post functionality entirely
-add_filter('navas_baseline_duplicate_post_config', function($config) {
+add_filter('siratik_baseline_duplicate_post_config', function($config) {
     $config['enabled'] = false;
     return $config;
 });
 
 // Limit to specific post types
-add_filter('navas_baseline_duplicate_post_config', function($config) {
+add_filter('siratik_baseline_duplicate_post_config', function($config) {
     $config['post_types'] = ['post', 'page', 'product'];
     return $config;
 });
 
 // Disable for specific post types
-add_filter('navas_baseline_duplicate_post_config', function($config) {
+add_filter('siratik_baseline_duplicate_post_config', function($config) {
     // Get all public post types
     $post_types = get_post_types(['public' => true]);
     // Remove the ones you don't want
@@ -311,7 +311,7 @@ add_filter('navas_baseline_duplicate_post_config', function($config) {
 });
 
 // Deny duplication for a specific post (list link + admin action)
-add_filter('navas_baseline_can_duplicate_post', function($can, $post) {
+add_filter('siratik_baseline_can_duplicate_post', function($can, $post) {
     if ($post instanceof WP_Post && get_post_meta($post->ID, 'my_locked_meta', true)) {
         return false;
     }
@@ -332,7 +332,7 @@ When a post is duplicated:
 Many hosts already block PHP execution inside the uploads directory at the server level. Baseline adds the same rule in `.htaccess` so the protection is in place even on hosts that don't set it up themselves — closing off a common technique for persisting malicious code after a compromise. Enabled by default. To disable this:
 
 ```php
-add_filter('navas_baseline_block_uploads_php_execution', '__return_false');
+add_filter('siratik_baseline_block_uploads_php_execution', '__return_false');
 ```
 
 This only controls Baseline's own `.htaccess` rule. If your host already blocks PHP execution in uploads at the server level, that protection is independent of this filter and stays in place either way.

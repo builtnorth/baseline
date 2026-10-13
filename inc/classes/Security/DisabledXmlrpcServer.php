@@ -14,7 +14,7 @@ declare(strict_types=1);
  * @package WPBaseline
  */
 
-namespace Navas\Baseline\Security;
+namespace Siratik\Baseline\Security;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;

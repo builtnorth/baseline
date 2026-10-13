@@ -11,7 +11,7 @@
  * @since 2.0.0
  */
 
-namespace Navas\Baseline\Cleanup;
+namespace Siratik\Baseline\Cleanup;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -25,7 +25,7 @@ class Mail
 	{
 
 		// Check if the removal of emails should be enabled
-		$enable_removal = apply_filters('navas_baseline_disable_update_emails', true);
+		$enable_removal = apply_filters('siratik_baseline_disable_update_emails', true);
 
 		if (!$enable_removal) {
 			return;

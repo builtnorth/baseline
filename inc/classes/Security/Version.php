@@ -11,7 +11,7 @@
  * @since 2.0.0
  */
 
-namespace Navas\Baseline\Security;
+namespace Siratik\Baseline\Security;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -80,7 +80,7 @@ class Version
 	private function get_asset_version()
 	{
 		// Constant defined by the theme or plugin
-		$asset_version_constant = apply_filters('navas_baseline_asset_version_constant', '');
+		$asset_version_constant = apply_filters('siratik_baseline_asset_version_constant', '');
 		if (defined($asset_version_constant)) {
 			return constant($asset_version_constant);
 		}

@@ -14,7 +14,7 @@ pipeline itself lives there and this package only passes its own settings.
 Run **Release** from the Actions tab with the version to release (for
 example `1.2.0`, without the `v`), or push a `v1.2.0` tag. The reusable
 workflow tags the release, generates the changelog from Conventional
-Commit subjects and publishes the GitHub release for `navas/baseline`.
+Commit subjects and publishes the GitHub release for `siratik/baseline`.
 
 Commit types decide the changelog section and the suggested version bump:
 `feat` is a minor release, a `!` after the type or a `BREAKING CHANGE:`
@@ -26,7 +26,7 @@ footer is a major release, and everything else is a patch.
 |---|---|
 | `package-name` | `baseline` |
 | `package-display-name` | `Baseline` |
-| `composer-namespace` | `navas/baseline` |
+| `composer-namespace` | `siratik/baseline` |
 | `composer-repository-profile` | `coding-standards-only` |
 
 Secrets are inherited from the organisation.

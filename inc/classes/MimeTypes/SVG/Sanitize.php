@@ -11,9 +11,9 @@
  * @since 2.0.0
  */
 
-namespace Navas\Baseline\MimeTypes\SVG;
+namespace Siratik\Baseline\MimeTypes\SVG;
 
-use Navas\Baseline\MimeTypes\Capability;
+use Siratik\Baseline\MimeTypes\Capability;
 use enshrined\svgSanitize\Sanitizer;
 
 class Sanitize
@@ -59,21 +59,21 @@ class Sanitize
 		}
 
 		if (!Capability::current_user_can_upload('svg')) {
-			$file['error'] = __('You do not have permission to upload SVG files.', 'navas-baseline');
+			$file['error'] = __('You do not have permission to upload SVG files.', 'siratik-baseline');
 
 			return $file;
 		}
 
 		$tmp_name = (string) ($file['tmp_name'] ?? '');
 		if ('' === $tmp_name || ! is_readable($tmp_name)) {
-			$file['error'] = __('SVG file could not be read for sanitization.', 'navas-baseline');
+			$file['error'] = __('SVG file could not be read for sanitization.', 'siratik-baseline');
 
 			return $file;
 		}
 
 		$dirty_svg = file_get_contents($tmp_name);
 		if (false === $dirty_svg) {
-			$file['error'] = __('SVG file could not be read for sanitization.', 'navas-baseline');
+			$file['error'] = __('SVG file could not be read for sanitization.', 'siratik-baseline');
 
 			return $file;
 		}
@@ -83,13 +83,13 @@ class Sanitize
 
 		// Fail closed: a file that cannot be sanitized is never stored.
 		if (false === $clean_svg || '' === trim((string) $clean_svg)) {
-			$file['error'] = __('SVG file could not be sanitized.', 'navas-baseline');
+			$file['error'] = __('SVG file could not be sanitized.', 'siratik-baseline');
 
 			return $file;
 		}
 
 		if (false === file_put_contents($tmp_name, $clean_svg)) {
-			$file['error'] = __('Sanitized SVG could not be written.', 'navas-baseline');
+			$file['error'] = __('Sanitized SVG could not be written.', 'siratik-baseline');
 		}
 
 		return $file;

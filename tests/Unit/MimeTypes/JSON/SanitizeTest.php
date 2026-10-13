@@ -2,12 +2,12 @@
 /**
  * Tests for JSON Sanitization
  *
- * @package Navas\Baseline\Tests\Unit\MimeTypes\JSON
+ * @package Siratik\Baseline\Tests\Unit\MimeTypes\JSON
  */
 
-namespace Navas\Baseline\Tests\Unit\MimeTypes\JSON;
+namespace Siratik\Baseline\Tests\Unit\MimeTypes\JSON;
 
-use Navas\Baseline\MimeTypes\JSON\Sanitize;
+use Siratik\Baseline\MimeTypes\JSON\Sanitize;
 use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use WP_Mock;
 
@@ -31,7 +31,7 @@ class SanitizeTest extends WPMockTestCase {
 	}
 
 	protected function make_temp_file( $contents ) {
-		$path = tempnam( sys_get_temp_dir(), 'navas_baseline_test_' );
+		$path = tempnam( sys_get_temp_dir(), 'siratik_baseline_test_' );
 		file_put_contents( $path, $contents );
 		$this->temp_files[] = $path;
 
@@ -62,7 +62,7 @@ class SanitizeTest extends WPMockTestCase {
 	 */
 	public function test_sanitize_json_files_keys_off_extension_when_type_spoofed() {
 		WP_Mock::userFunction( 'current_user_can' )->andReturn( true );
-		WP_Mock::onFilter( 'navas_baseline_mime_upload_capability' )->with( 'manage_options', 'json' )->reply( 'manage_options' );
+		WP_Mock::onFilter( 'siratik_baseline_mime_upload_capability' )->with( 'manage_options', 'json' )->reply( 'manage_options' );
 		WP_Mock::userFunction( '__' )->andReturnUsing( function ( $text ) {
 			return $text;
 		} );
@@ -89,7 +89,7 @@ class SanitizeTest extends WPMockTestCase {
 	 */
 	public function test_sanitize_json_files_keys_off_declared_type() {
 		WP_Mock::userFunction( 'current_user_can' )->andReturn( true );
-		WP_Mock::onFilter( 'navas_baseline_mime_upload_capability' )->with( 'manage_options', 'json' )->reply( 'manage_options' );
+		WP_Mock::onFilter( 'siratik_baseline_mime_upload_capability' )->with( 'manage_options', 'json' )->reply( 'manage_options' );
 
 		$original = '{"ok":true}';
 		$path = $this->make_temp_file( $original );
@@ -117,7 +117,7 @@ class SanitizeTest extends WPMockTestCase {
 	 */
 	public function test_sanitize_json_files_leaves_valid_content_untouched() {
 		WP_Mock::userFunction( 'current_user_can' )->andReturn( true );
-		WP_Mock::onFilter( 'navas_baseline_mime_upload_capability' )->with( 'manage_options', 'json' )->reply( 'manage_options' );
+		WP_Mock::onFilter( 'siratik_baseline_mime_upload_capability' )->with( 'manage_options', 'json' )->reply( 'manage_options' );
 
 		$original = '{"note":"Turn on = go, this is legitimate content"}';
 		$path = $this->make_temp_file( $original );
@@ -142,7 +142,7 @@ class SanitizeTest extends WPMockTestCase {
 	 */
 	public function test_sanitize_json_files_rejects_invalid_json() {
 		WP_Mock::userFunction( 'current_user_can' )->andReturn( true );
-		WP_Mock::onFilter( 'navas_baseline_mime_upload_capability' )->with( 'manage_options', 'json' )->reply( 'manage_options' );
+		WP_Mock::onFilter( 'siratik_baseline_mime_upload_capability' )->with( 'manage_options', 'json' )->reply( 'manage_options' );
 		WP_Mock::userFunction( '__' )->andReturnUsing( function ( $text ) {
 			return $text;
 		} );
@@ -168,7 +168,7 @@ class SanitizeTest extends WPMockTestCase {
 	 */
 	public function test_sanitize_json_files_denies_without_capability() {
 		WP_Mock::userFunction( 'current_user_can' )->andReturn( false );
-		WP_Mock::onFilter( 'navas_baseline_mime_upload_capability' )->with( 'manage_options', 'json' )->reply( 'manage_options' );
+		WP_Mock::onFilter( 'siratik_baseline_mime_upload_capability' )->with( 'manage_options', 'json' )->reply( 'manage_options' );
 		WP_Mock::userFunction( '__' )->andReturnUsing( function ( $text ) {
 			return $text;
 		} );

@@ -2,12 +2,12 @@
 /**
  * Tests for SVG Sanitization
  *
- * @package Navas\Baseline\Tests\Unit\MimeTypes\SVG
+ * @package Siratik\Baseline\Tests\Unit\MimeTypes\SVG
  */
 
-namespace Navas\Baseline\Tests\Unit\MimeTypes\SVG;
+namespace Siratik\Baseline\Tests\Unit\MimeTypes\SVG;
 
-use Navas\Baseline\MimeTypes\SVG\Sanitize;
+use Siratik\Baseline\MimeTypes\SVG\Sanitize;
 use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use WP_Mock;
 
@@ -121,7 +121,7 @@ class SanitizeTest extends WPMockTestCase {
 			'size'     => 1024,
 		];
 
-		WP_Mock::onFilter( 'navas_baseline_mime_upload_capability' )
+		WP_Mock::onFilter( 'siratik_baseline_mime_upload_capability' )
 			->with( 'manage_options', 'svg' )
 			->reply( 'manage_options' );
 
@@ -163,7 +163,7 @@ class SanitizeTest extends WPMockTestCase {
 			->andReturn( false );
 		
 		WP_Mock::userFunction( '__' )
-			->with( 'SVG file could not be read for sanitization.', 'navas-baseline' )
+			->with( 'SVG file could not be read for sanitization.', 'siratik-baseline' )
 			->andReturn( 'SVG file could not be read for sanitization.' );
 		
 		$result = $sanitize->sanitize_svg( $file );

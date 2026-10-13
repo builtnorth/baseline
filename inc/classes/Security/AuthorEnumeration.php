@@ -11,7 +11,7 @@
  * @since 2.2.0
  */
 
-namespace Navas\Baseline\Security;
+namespace Siratik\Baseline\Security;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -23,7 +23,7 @@ class AuthorEnumeration
 	 */
 	public function init()
 	{
-		if ((bool) apply_filters('navas_baseline_block_author_enumeration', true)) {
+		if ((bool) apply_filters('siratik_baseline_block_author_enumeration', true)) {
 			// Priority 0: WordPress core's own redirect_canonical() runs on
 			// template_redirect at the default priority (10) and would
 			// otherwise 301 straight to /author/username/ before this ever
@@ -58,8 +58,8 @@ class AuthorEnumeration
 		}
 
 		wp_die(
-			esc_html__('Not found.', 'navas-baseline'),
-			esc_html__('Not Found', 'navas-baseline'),
+			esc_html__('Not found.', 'siratik-baseline'),
+			esc_html__('Not Found', 'siratik-baseline'),
 			['response' => 404]
 		);
 	}

@@ -11,7 +11,7 @@
  * @since 2.2.0
  */
 
-namespace Navas\Baseline\Security;
+namespace Siratik\Baseline\Security;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -23,7 +23,7 @@ class UploadsExecution
 	 */
 	public function init()
 	{
-		if ((bool) apply_filters('navas_baseline_block_uploads_php_execution', true)) {
+		if ((bool) apply_filters('siratik_baseline_block_uploads_php_execution', true)) {
 			add_filter('mod_rewrite_rules', [$this, 'block_uploads_php_execution']);
 		}
 	}

@@ -11,7 +11,7 @@
  * @since 2.0.0
  */
 
-namespace Navas\Baseline\MimeTypes;
+namespace Siratik\Baseline\MimeTypes;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -24,7 +24,7 @@ class Init
 	public function init()
 	{
 		// Initialize SVG support if not disabled
-		if (apply_filters('navas_baseline_enable_svg_uploads', true)) {
+		if (apply_filters('siratik_baseline_enable_svg_uploads', true)) {
 			$svg_upload = new SVG\Upload();
 			$svg_upload->init();
 			
@@ -33,7 +33,7 @@ class Init
 		}
 
 		// Initialize JSON support if explicitly enabled
-		if (apply_filters('navas_baseline_enable_json_uploads', false)) {
+		if (apply_filters('siratik_baseline_enable_json_uploads', false)) {
 			$json_upload = new JSON\Upload();
 			$json_upload->init();
 			
@@ -42,7 +42,7 @@ class Init
 		}
 
 		// Initialize Lottie support if explicitly enabled
-		if (apply_filters('navas_baseline_enable_lottie_uploads', false)) {
+		if (apply_filters('siratik_baseline_enable_lottie_uploads', false)) {
 			$lottie_upload = new Lottie\Upload();
 			$lottie_upload->init();
 			

@@ -2,12 +2,12 @@
 /**
  * Tests for Security Headers
  *
- * @package Navas\Baseline\Tests\Unit\Security
+ * @package Siratik\Baseline\Tests\Unit\Security
  */
 
-namespace Navas\Baseline\Tests\Unit\Security;
+namespace Siratik\Baseline\Tests\Unit\Security;
 
-use Navas\Baseline\Security\Headers;
+use Siratik\Baseline\Security\Headers;
 use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use WP_Mock;
 
@@ -29,7 +29,7 @@ class HeadersTest extends WPMockTestCase {
 	 */
 	public function test_default_security_headers() {
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_security_headers', \Mockery::type( 'array' ) )
+			->with( 'siratik_baseline_security_headers', \Mockery::type( 'array' ) )
 			->andReturnUsing( function( $filter, $headers ) {
 				// Check that default headers are present
 				$this->assertArrayHasKey( 'X-Content-Type-Options', $headers );
@@ -40,7 +40,7 @@ class HeadersTest extends WPMockTestCase {
 			});
 
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_security_headers_csp', \Mockery::type( 'array' ) )
+			->with( 'siratik_baseline_security_headers_csp', \Mockery::type( 'array' ) )
 			->andReturnUsing( function( $filter, $csp ) {
 				return $csp;
 			});
@@ -55,13 +55,13 @@ class HeadersTest extends WPMockTestCase {
 	 */
 	public function test_csp_directives_structure() {
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_security_headers', \Mockery::type( 'array' ) )
+			->with( 'siratik_baseline_security_headers', \Mockery::type( 'array' ) )
 			->andReturnUsing( function( $filter, $headers ) {
 				return $headers;
 			});
 
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_security_headers_csp', \Mockery::type( 'array' ) )
+			->with( 'siratik_baseline_security_headers_csp', \Mockery::type( 'array' ) )
 			->andReturnUsing( function( $filter, $csp ) {
 				// Check CSP structure
 				$this->assertIsArray( $csp );
@@ -85,11 +85,11 @@ class HeadersTest extends WPMockTestCase {
 		];
 
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_security_headers', \Mockery::type( 'array' ) )
+			->with( 'siratik_baseline_security_headers', \Mockery::type( 'array' ) )
 			->andReturn( $custom_headers );
 
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_security_headers_csp', \Mockery::type( 'array' ) )
+			->with( 'siratik_baseline_security_headers_csp', \Mockery::type( 'array' ) )
 			->andReturn( [] );
 
 		new Headers();
@@ -106,13 +106,13 @@ class HeadersTest extends WPMockTestCase {
 		];
 
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_security_headers', \Mockery::type( 'array' ) )
+			->with( 'siratik_baseline_security_headers', \Mockery::type( 'array' ) )
 			->andReturnUsing( function( $filter, $headers ) {
 				return $headers;
 			});
 
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_security_headers_csp', \Mockery::type( 'array' ) )
+			->with( 'siratik_baseline_security_headers_csp', \Mockery::type( 'array' ) )
 			->andReturn( $custom_csp );
 
 		new Headers();

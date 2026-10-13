@@ -11,9 +11,9 @@
  * @since 2.3.0
  */
 
-namespace Navas\Baseline\MimeTypes\Lottie;
+namespace Siratik\Baseline\MimeTypes\Lottie;
 
-use Navas\Baseline\MimeTypes\Capability;
+use Siratik\Baseline\MimeTypes\Capability;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -26,7 +26,7 @@ class Validate
 	public function init()
 	{
 		// Only add validation if enabled (default: true)
-		if (apply_filters('navas_baseline_validate_lottie_uploads', true)) {
+		if (apply_filters('siratik_baseline_validate_lottie_uploads', true)) {
 			add_filter('wp_handle_upload_prefilter', [$this, 'validate_lottie_files']);
 		}
 	}
@@ -45,15 +45,15 @@ class Validate
 		}
 
 		if (!Capability::current_user_can_upload('lottie')) {
-			$file['error'] = __('You do not have permission to upload Lottie files.', 'navas-baseline');
+			$file['error'] = __('You do not have permission to upload Lottie files.', 'siratik-baseline');
 			return $file;
 		}
 
 		// Check file size limit
-		$max_size = apply_filters('navas_baseline_lottie_max_file_size', 10 * 1024 * 1024); // 10MB default
+		$max_size = apply_filters('siratik_baseline_lottie_max_file_size', 10 * 1024 * 1024); // 10MB default
 		if ($file['size'] > $max_size) {
 			$file['error'] = sprintf(
-				__('Lottie file is too large. Maximum size is %s.', 'navas-baseline'),
+				__('Lottie file is too large. Maximum size is %s.', 'siratik-baseline'),
 				size_format($max_size)
 			);
 			return $file;
@@ -61,7 +61,7 @@ class Validate
 
 		// Validate file structure
 		if (!$this->validate_lottie_structure($file)) {
-			$file['error'] = __('Invalid Lottie file format.', 'navas-baseline');
+			$file['error'] = __('Invalid Lottie file format.', 'siratik-baseline');
 			return $file;
 		}
 

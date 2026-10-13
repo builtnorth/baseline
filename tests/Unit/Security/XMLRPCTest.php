@@ -2,14 +2,14 @@
 /**
  * Tests for the XML-RPC switch-off.
  *
- * @package Navas\Baseline\Tests\Unit\Security
+ * @package Siratik\Baseline\Tests\Unit\Security
  */
 
-namespace Navas\Baseline\Tests\Unit\Security;
+namespace Siratik\Baseline\Tests\Unit\Security;
 
 use BuiltNorth\WPMockStandIns\WPMockTestCase;
-use Navas\Baseline\Security\DisabledXmlrpcServer;
-use Navas\Baseline\Security\XMLRPC;
+use Siratik\Baseline\Security\DisabledXmlrpcServer;
+use Siratik\Baseline\Security\XMLRPC;
 
 /**
  * XMLRPC test case
@@ -33,11 +33,11 @@ class XMLRPCTest extends WPMockTestCase {
 	 */
 	public function test_init_hooks_run_last_and_refuse_rsd(): void {
 		$xmlrpc = new XMLRPC();
-		$GLOBALS['navas_baseline_test_hooks'] = [];
+		$GLOBALS['siratik_baseline_test_hooks'] = [];
 
 		$xmlrpc->init();
 
-		$hooks = $GLOBALS['navas_baseline_test_hooks'];
+		$hooks = $GLOBALS['siratik_baseline_test_hooks'];
 		$this->assertContains( [ 'filter', 'wp_xmlrpc_server_class', [ $xmlrpc, 'disabled_server_class' ], PHP_INT_MAX ], $hooks );
 		$this->assertContains( [ 'filter', 'xmlrpc_enabled', '__return_false', PHP_INT_MAX ], $hooks );
 		$this->assertContains( [ 'action', 'init', [ $xmlrpc, 'refuse_xmlrpc_request' ], 0 ], $hooks );

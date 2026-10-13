@@ -12,7 +12,7 @@
  * @since 3.0.0
  */
 
-namespace Navas\Baseline\MimeTypes;
+namespace Siratik\Baseline\MimeTypes;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -38,7 +38,7 @@ class Capability
 		 * @param string $capability Required capability. Default 'manage_options'.
 		 * @param string $mime_key   One of 'svg', 'json', 'lottie'.
 		 */
-		$capability = apply_filters('navas_baseline_mime_upload_capability', 'manage_options', $mime_key);
+		$capability = apply_filters('siratik_baseline_mime_upload_capability', 'manage_options', $mime_key);
 
 		return current_user_can($capability);
 	}

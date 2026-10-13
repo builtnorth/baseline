@@ -2,12 +2,12 @@
 /**
  * Tests for the main Baseline class
  *
- * @package Navas\Baseline\Tests\Unit
+ * @package Siratik\Baseline\Tests\Unit
  */
 
-namespace Navas\Baseline\Tests\Unit;
+namespace Siratik\Baseline\Tests\Unit;
 
-use Navas\Baseline\Baseline;
+use Siratik\Baseline\Baseline;
 use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use WP_Mock;
 
@@ -45,7 +45,7 @@ class BaselineTest extends WPMockTestCase {
 		$this->mock_comments_boot_defaults();
 		// Mock specific filters
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_disable_comments', false )
+			->with( 'siratik_baseline_disable_comments', false )
 			->andReturn( false );
 
 		$app = Baseline::instance();
@@ -61,7 +61,7 @@ class BaselineTest extends WPMockTestCase {
 	public function test_cleanup_module_registered() {
 		$this->mock_comments_boot_defaults();
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_disable_comments', false )
+			->with( 'siratik_baseline_disable_comments', false )
 			->andReturn( false );
 
 		$app = Baseline::instance();
@@ -77,7 +77,7 @@ class BaselineTest extends WPMockTestCase {
 	public function test_security_module_registered() {
 		$this->mock_comments_boot_defaults();
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_disable_comments', false )
+			->with( 'siratik_baseline_disable_comments', false )
 			->andReturn( false );
 
 		$app = Baseline::instance();
@@ -93,7 +93,7 @@ class BaselineTest extends WPMockTestCase {
 	public function test_mime_types_module_registered() {
 		$this->mock_comments_boot_defaults();
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_disable_comments', false )
+			->with( 'siratik_baseline_disable_comments', false )
 			->andReturn( false );
 
 		$app = Baseline::instance();
@@ -109,7 +109,7 @@ class BaselineTest extends WPMockTestCase {
 	public function test_utilities_module_registered() {
 		$this->mock_comments_boot_defaults();
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_disable_comments', false )
+			->with( 'siratik_baseline_disable_comments', false )
 			->andReturn( false );
 
 		$app = Baseline::instance();
@@ -125,7 +125,7 @@ class BaselineTest extends WPMockTestCase {
 	public function test_comments_disabled_via_filter() {
 		$this->mock_comments_boot_defaults();
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_disable_comments', false )
+			->with( 'siratik_baseline_disable_comments', false )
 			->andReturn( true );
 
 		$app = Baseline::instance();
@@ -141,7 +141,7 @@ class BaselineTest extends WPMockTestCase {
 	public function test_comments_not_registered_by_default() {
 		$this->mock_comments_boot_defaults();
 		WP_Mock::userFunction( 'apply_filters' )
-			->with( 'navas_baseline_disable_comments', false )
+			->with( 'siratik_baseline_disable_comments', false )
 			->andReturn( false );
 
 		$app = Baseline::instance();

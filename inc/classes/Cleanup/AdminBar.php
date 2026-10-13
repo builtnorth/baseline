@@ -11,7 +11,7 @@
  * @since 2.0.0
  */
 
-namespace Navas\Baseline\Cleanup;
+namespace Siratik\Baseline\Cleanup;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -35,7 +35,7 @@ class AdminBar
 		$my_account = $wp_admin_bar->get_node('my-account');
 		if (isset($my_account->title)) {
 			// Apply a filter to allow customization of the "Howdy" text
-			$howdy_text = apply_filters('navas_baseline_howdy_text', '');
+			$howdy_text = apply_filters('siratik_baseline_howdy_text', '');
 			$newtitle = str_replace('Howdy, ', $howdy_text, $my_account->title);
 			$wp_admin_bar->add_node(array(
 				'id' => 'my-account',
@@ -52,7 +52,7 @@ class AdminBar
 	public function remove_admin_nodes($wp_admin_bar)
 	{
 		// Check if the functionality should be enabled
-		$enable_removal = apply_filters('navas_baseline_clean_admin_bar', true);
+		$enable_removal = apply_filters('siratik_baseline_clean_admin_bar', true);
 
 		// If the functionality is disabled, return the admin bar
 		if (!$enable_removal) {

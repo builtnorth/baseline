@@ -11,7 +11,7 @@
  * @since 2.0.0
  */
 
-namespace Navas\Baseline\Comments;
+namespace Siratik\Baseline\Comments;
 
 class Actions
 {
@@ -19,7 +19,7 @@ class Actions
 	 * Option set after open comment_status rows have been closed once.
 	 * Avoids SELECT/UPDATE on every init on shared hosts.
 	 */
-	private const COMMENTS_CLOSED_OPTION = 'navas_baseline_comments_db_closed';
+	private const COMMENTS_CLOSED_OPTION = 'siratik_baseline_comments_db_closed';
 
 	/**
 	 * Initialize the class.
@@ -27,7 +27,7 @@ class Actions
 	public function init()
 	{
 		// Check if comments should be disabled
-		if (!apply_filters('navas_baseline_disable_comments', false)) {
+		if (!apply_filters('siratik_baseline_disable_comments', false)) {
 			// Allow a future re-enable → disable cycle to close newly opened posts.
 			if (get_option(self::COMMENTS_CLOSED_OPTION)) {
 				delete_option(self::COMMENTS_CLOSED_OPTION);
@@ -213,8 +213,8 @@ class Actions
 		nocache_headers();
 
 		wp_die(
-			esc_html__('Comment feeds are disabled.', 'navas-baseline'),
-			esc_html__('Not Found', 'navas-baseline'),
+			esc_html__('Comment feeds are disabled.', 'siratik-baseline'),
+			esc_html__('Not Found', 'siratik-baseline'),
 			['response' => 404]
 		);
 	}

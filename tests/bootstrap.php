@@ -2,7 +2,7 @@
 /**
  * PHPUnit bootstrap file for WP Baseline
  *
- * @package Navas\Baseline
+ * @package Siratik\Baseline
  */
 
 // Load Composer autoloader, falling back to the monorepo root's autoloader
@@ -21,7 +21,7 @@ require_once $autoloader;
 if ( $using_root_autoloader ) {
 	spl_autoload_register(
 		static function ( string $class ): void {
-			$prefix = 'Navas\\Baseline\\Tests\\';
+			$prefix = 'Siratik\\Baseline\\Tests\\';
 			if ( ! str_starts_with( $class, $prefix ) ) {
 				return;
 			}

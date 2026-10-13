@@ -11,7 +11,7 @@
  * @since 2.1.0
  */
 
-namespace Navas\Baseline\Security;
+namespace Siratik\Baseline\Security;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -58,7 +58,7 @@ class Headers
 	public function init(): void
 	{
 		// Check if security headers are enabled
-		if (!(bool) apply_filters('navas_baseline_enable_security_headers', true)) {
+		if (!(bool) apply_filters('siratik_baseline_enable_security_headers', true)) {
 			return;
 		}
 
@@ -88,7 +88,7 @@ class Headers
 		}
 
 		// Apply security headers
-		$headers = apply_filters('navas_baseline_security_headers', self::SECURITY_HEADERS);
+		$headers = apply_filters('siratik_baseline_security_headers', self::SECURITY_HEADERS);
 		$is_ssl = is_ssl();
 
 		// Loop through headers and set them
@@ -112,7 +112,7 @@ class Headers
 		}
 
 		// Get CSP directives
-		$directives = apply_filters('navas_baseline_security_headers_csp', self::CSP_DIRECTIVES);
+		$directives = apply_filters('siratik_baseline_security_headers_csp', self::CSP_DIRECTIVES);
 
 		// Build CSP header value
 		$header_value = $this->build_csp_value($directives);

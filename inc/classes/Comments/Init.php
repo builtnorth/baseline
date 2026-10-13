@@ -11,9 +11,9 @@
  * @since 1.0.0
  */
 
-namespace Navas\Baseline\Comments;
+namespace Siratik\Baseline\Comments;
 
-use Navas\Baseline\Abstracts\AbstractInit;
+use Siratik\Baseline\Abstracts\AbstractInit;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;

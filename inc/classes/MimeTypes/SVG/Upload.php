@@ -13,9 +13,9 @@ declare(strict_types=1);
  * @since 2.0.0
  */
 
-namespace Navas\Baseline\MimeTypes\SVG;
+namespace Siratik\Baseline\MimeTypes\SVG;
 
-use Navas\Baseline\MimeTypes\Capability;
+use Siratik\Baseline\MimeTypes\Capability;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;

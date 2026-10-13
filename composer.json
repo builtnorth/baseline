@@ -1,5 +1,5 @@
 {
-	"name": "navas/baseline",
+	"name": "siratik/baseline",
 	"description": "Baseline WordPress hardening, cleanup and mime-type support",
 	"type": "library",
 	"license": "GPL-2.0-or-later",
@@ -12,7 +12,7 @@
 	"require": {
 		"php": ">=8.1",
 		"enshrined/svg-sanitize": "^0.22.0",
-		"navas/package-loader": "^0.1"
+		"siratik/package-loader": "^0.1"
 	},
 	"require-dev": {
 		"10up/wp_mock": "^1.0",
@@ -23,7 +23,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Navas\\Baseline\\": "inc/classes/"
+			"Siratik\\Baseline\\": "inc/classes/"
 		},
 		"files": [
 			"register.php"
@@ -31,7 +31,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Navas\\Baseline\\Tests\\": "tests/"
+			"Siratik\\Baseline\\Tests\\": "tests/"
 		}
 	},
 	"config": {

@@ -12,7 +12,7 @@
  * @since 1.0.0
  */
 
-namespace Navas\Baseline\Utilities;
+namespace Siratik\Baseline\Utilities;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -68,7 +68,7 @@ class DuplicatePost
 		 *                              Empty array means all post types. Default empty array.
 		 * }
 		 */
-		return apply_filters('navas_baseline_duplicate_post_config', $defaults);
+		return apply_filters('siratik_baseline_duplicate_post_config', $defaults);
 	}
 
 
@@ -101,8 +101,8 @@ class DuplicatePost
 				'duplicate_post_' . $post->ID,
 				'duplicate_nonce'
 			),
-			esc_attr__('Duplicate this item', 'navas-baseline'),
-			esc_html__('Duplicate', 'navas-baseline')
+			esc_attr__('Duplicate this item', 'siratik-baseline'),
+			esc_html__('Duplicate', 'siratik-baseline')
 		);
 
 		return $actions;
@@ -151,7 +151,7 @@ class DuplicatePost
 		 * @param bool     $can  Whether duplication is allowed. Default: edit_posts capability.
 		 * @param \WP_Post $post Post being duplicated.
 		 */
-		return (bool) apply_filters('navas_baseline_can_duplicate_post', $can, $post);
+		return (bool) apply_filters('siratik_baseline_can_duplicate_post', $can, $post);
 	}
 
 	/**
@@ -164,24 +164,24 @@ class DuplicatePost
 
 		// Verify nonce
 		if (!$post_id || !$nonce || !wp_verify_nonce($nonce, 'duplicate_post_' . $post_id)) {
-			wp_die(__('Security check failed.', 'navas-baseline'));
+			wp_die(__('Security check failed.', 'siratik-baseline'));
 		}
 
 		// Get the original post
 		$post = get_post($post_id);
 
 		if (!$post) {
-			wp_die(sprintf(__('Post creation failed, could not find original post: %d', 'navas-baseline'), $post_id));
+			wp_die(sprintf(__('Post creation failed, could not find original post: %d', 'siratik-baseline'), $post_id));
 		}
 		
 		// Check if this post type is allowed
 		if (!$this->is_post_type_allowed($post->post_type)) {
-			wp_die(__('This post type cannot be duplicated.', 'navas-baseline'));
+			wp_die(__('This post type cannot be duplicated.', 'siratik-baseline'));
 		}
 
 		// Check permissions
 		if (!$this->can_duplicate_post($post)) {
-			wp_die(__('You do not have permission to duplicate this post.', 'navas-baseline'));
+			wp_die(__('You do not have permission to duplicate this post.', 'siratik-baseline'));
 		}
 
 		// Create the duplicate
@@ -202,7 +202,7 @@ class DuplicatePost
 			wp_safe_redirect($redirect_url);
 			exit;
 		} else {
-			wp_die(__('Post creation failed', 'navas-baseline'));
+			wp_die(__('Post creation failed', 'siratik-baseline'));
 		}
 	}
 
@@ -240,7 +240,7 @@ class DuplicatePost
 		$this->duplicate_meta_fields($post->ID, $new_post_id);
 
 		// Allow other plugins to hook into the duplication process
-		do_action('navas_baseline_post_duplicated', $post->ID, $new_post_id, $post);
+		do_action('siratik_baseline_post_duplicated', $post->ID, $new_post_id, $post);
 
 		return $new_post_id;
 	}
@@ -318,12 +318,12 @@ class DuplicatePost
 	{
 		$duplicated = isset($_GET['duplicated']) ? absint(wp_unslash($_GET['duplicated'])) : 0;
 		if ($duplicated === 1) {
-			$message = __('Post duplicated successfully.', 'navas-baseline');
+			$message = __('Post duplicated successfully.', 'siratik-baseline');
 			if (isset($_GET['duplicate_id'])) {
 				$duplicate_id = absint(wp_unslash($_GET['duplicate_id']));
 				$edit_link = get_edit_post_link($duplicate_id);
 				if ($edit_link) {
-					$message .= ' <a href="' . esc_url($edit_link) . '">' . __('Edit duplicate', 'navas-baseline') . '</a>';
+					$message .= ' <a href="' . esc_url($edit_link) . '">' . __('Edit duplicate', 'siratik-baseline') . '</a>';
 				}
 			}
 			printf(

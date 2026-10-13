@@ -2,12 +2,12 @@
 /**
  * Tests for Lottie Validation
  *
- * @package Navas\Baseline\Tests\Unit\MimeTypes\Lottie
+ * @package Siratik\Baseline\Tests\Unit\MimeTypes\Lottie
  */
 
-namespace Navas\Baseline\Tests\Unit\MimeTypes\Lottie;
+namespace Siratik\Baseline\Tests\Unit\MimeTypes\Lottie;
 
-use Navas\Baseline\MimeTypes\Lottie\Validate;
+use Siratik\Baseline\MimeTypes\Lottie\Validate;
 use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use WP_Mock;
 
@@ -65,7 +65,7 @@ class ValidateTest extends WPMockTestCase {
 	 * strlen($content) > 0 was the only check on this path.
 	 */
 	public function test_validate_lottie_archive_rejects_arbitrary_binary() {
-		$path = tempnam( sys_get_temp_dir(), 'navas_baseline_test_' );
+		$path = tempnam( sys_get_temp_dir(), 'siratik_baseline_test_' );
 		file_put_contents( $path, "not a zip file at all, just bytes\x00\x01\x02" );
 		$this->temp_files[] = $path;
 
@@ -173,7 +173,7 @@ class ValidateTest extends WPMockTestCase {
 	 * @return string Path to the temp ZIP file.
 	 */
 	protected function make_zip( array $entries ) {
-		$path = tempnam( sys_get_temp_dir(), 'navas_baseline_test_' ) . '.zip';
+		$path = tempnam( sys_get_temp_dir(), 'siratik_baseline_test_' ) . '.zip';
 		$this->temp_files[] = $path;
 
 		$zip = new \ZipArchive();

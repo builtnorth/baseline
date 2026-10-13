@@ -2,13 +2,13 @@
 /**
  * Tests for Duplicate Post utility
  *
- * @package Navas\Baseline\Tests\Unit\Utilities
+ * @package Siratik\Baseline\Tests\Unit\Utilities
  */
 
-namespace Navas\Baseline\Tests\Unit\Utilities;
+namespace Siratik\Baseline\Tests\Unit\Utilities;
 
 use BuiltNorth\WPMockStandIns\WPMockTestCase;
-use Navas\Baseline\Utilities\DuplicatePost;
+use Siratik\Baseline\Utilities\DuplicatePost;
 use WP_Mock;
 
 /**
@@ -70,7 +70,7 @@ class DuplicatePostTest extends WPMockTestCase {
 			->with( 'edit_post', 42 )
 			->andReturn( false );
 
-		WP_Mock::onFilter( 'navas_baseline_can_duplicate_post' )
+		WP_Mock::onFilter( 'siratik_baseline_can_duplicate_post' )
 			->with( false, $post )
 			->reply( false );
 
@@ -100,7 +100,7 @@ class DuplicatePostTest extends WPMockTestCase {
 			->with( 'edit_post', 7 )
 			->andReturn( true );
 
-		WP_Mock::onFilter( 'navas_baseline_can_duplicate_post' )
+		WP_Mock::onFilter( 'siratik_baseline_can_duplicate_post' )
 			->with( true, $post )
 			->reply( true );
 

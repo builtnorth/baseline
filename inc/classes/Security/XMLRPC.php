@@ -11,7 +11,7 @@
  * @since 2.0.0
  */
 
-namespace Navas\Baseline\Security;
+namespace Siratik\Baseline\Security;
 
 // Don't load directly.
 defined('ABSPATH') || defined('WP_CLI') || exit;
@@ -23,7 +23,7 @@ class XMLRPC
 	 */
 	public function init()
 	{
-		if ((bool) apply_filters('navas_baseline_disable_xmlrpc', true)) {
+		if ((bool) apply_filters('siratik_baseline_disable_xmlrpc', true)) {
 			// Last, so a later filter can't turn XML-RPC back on.
 			add_filter('wp_xmlrpc_server_class', [$this, 'disabled_server_class'], PHP_INT_MAX);
 			add_filter('xmlrpc_enabled', '__return_false', PHP_INT_MAX);
