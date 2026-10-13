@@ -5,10 +5,10 @@
  * Duplicate Post Functionality
  * ------------------------------------------------------------------
  *
- * This class handles the duplicate post functionality for the Polaris plugin.
+ * This class handles the duplicate post functionality for the Kitaris plugin.
  * It provides the ability to duplicate posts and pages with all their data.
  *
- * @package Polaris\Admin
+ * @package Kitaris\Admin
  * @since 1.0.0
  */
 
