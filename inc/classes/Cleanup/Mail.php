@@ -24,6 +24,11 @@ class Mail
 	public function init()
 	{
 
+		// Send mail as the site's name.
+		if (apply_filters('siratik_baseline_mail_from_site_name', true)) {
+			add_filter('wp_mail_from_name', [$this, 'mail_from_name']);
+		}
+
 		// Check if the removal of emails should be enabled
 		$enable_removal = apply_filters('siratik_baseline_disable_update_emails', true);
 
@@ -31,8 +36,6 @@ class Mail
 			return;
 		}
 
-		add_filter('wp_mail_from_name', [$this, 'mail_from_name']);
-		//add_filter('wp_mail_from', [$this, 'mail_from_email']);
 		add_filter('auto_core_update_send_email', [$this, 'disable_auto_update_emails']);
 		add_filter('auto_plugin_update_send_email', [$this, 'disable_auto_update_emails']);
 		add_filter('auto_theme_update_send_email', [$this, 'disable_auto_update_emails']);

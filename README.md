@@ -82,7 +82,7 @@ add_filter('siratik_baseline_howdy_text', function ($text) {
 
 ### Admin Bar
 
-By default the WP logo, search, and updates nodes are removed from the admin bar. They can be re-enabled using the following filter:
+By default the WP logo, search, and updates nodes are removed from the admin bar and the "Howdy" text is replaced. Both are restored with the following filter:
 
 ```php
 add_filter('siratik_baseline_clean_admin_bar', '__return_false');
@@ -98,7 +98,8 @@ add_filter('siratik_baseline_remove_dashboard_widgets', '__return_false');
 
 ### Emojis
 
-Emojis are disabled. They can be re-enabled using the following filter:
+Emojis are disabled, and smiley conversion is turned off for each request (the `use_smilies` setting itself is
+left untouched). They can be re-enabled using the following filter:
 
 ```php
 add_filter('siratik_baseline_disable_emojis', '__return_false');
@@ -106,21 +107,53 @@ add_filter('siratik_baseline_disable_emojis', '__return_false');
 
 ### Auto Update Emails
 
-Auto update emails are disabled. Additionally, the from name in the email is customized based on the site name. This functionality can be reverted back to the default by using the filter:
+Auto update emails are disabled. They can be re-enabled with:
 
 ```php
 add_filter('siratik_baseline_disable_update_emails', '__return_false');
 ```
 
+### Mail From Name
+
+Outgoing mail uses the site name as the From name. To keep WordPress's default:
+
+```php
+add_filter('siratik_baseline_mail_from_site_name', '__return_false');
+```
+
 ### Asset Version Numbering
 
-Wordpress adds a version query argument to all enqueued assets by default. This exposes the version number, which can be a security risk. This package replaces the version number with `filemtime` of the theme's style.css file by default with a fallback to `date('Ymd')`. However, you can set a custom version by defining a constant in your theme or plugin:
+WordPress adds `?ver=<WordPress version>` to its own enqueued assets, which exposes the version. This package
+replaces that value with a salted hash of the version: the version stays hidden, but the value changes on every
+core update, so browsers fetch the new core CSS and JS. Assets with any other version are left alone. To mix your
+own release version into the hash (so your deploys bust the cache too), name a constant:
 
 ```php
 define('YOUR_THEME_VERSION', '1.2.9');
 add_filter('siratik_baseline_asset_version_constant', function () {
     return 'YOUR_THEME_VERSION';
 });
+```
+
+Version hiding (the generator tag, the admin footer version and these asset URLs) can be turned off entirely:
+
+```php
+add_filter('siratik_baseline_hide_wp_version', '__return_false');
+```
+
+### Head, Login, Pingbacks and File Editor
+
+Each of these is on by default and has its own switch:
+
+| Filter | What it does |
+|---|---|
+| `siratik_baseline_clean_head` | Removes generator, feed, RSD, wlwmanifest and rel links from `wp_head` |
+| `siratik_baseline_brand_login` | Uses the site's logo, link and title on the login screen |
+| `siratik_baseline_disable_self_pingbacks` | Drops self-pingbacks and the `X-Pingback` header |
+| `siratik_baseline_disallow_file_edit` | Defines `DISALLOW_FILE_EDIT` (no theme/plugin file editors) |
+
+```php
+add_filter('siratik_baseline_clean_head', '__return_false');
 ```
 
 ### Security Headers

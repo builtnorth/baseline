@@ -24,6 +24,11 @@ class Constants
 	 */
 	public function init()
 	{
+		// Turn off the theme and plugin file editors.
+		if (! apply_filters('siratik_baseline_disallow_file_edit', true)) {
+			return;
+		}
+
 		add_action('init', [$this, 'define_constants']);
 	}
 
@@ -32,9 +37,6 @@ class Constants
 	 */
 	public function define_constants()
 	{
-		if (!defined('FS_METHOD')) {
-			define('FS_METHOD', 'direct');
-		}
 		if (!defined('DISALLOW_FILE_EDIT')) {
 			define('DISALLOW_FILE_EDIT', true);
 		}

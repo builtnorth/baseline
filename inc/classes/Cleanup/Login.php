@@ -24,6 +24,11 @@ class Login
 	 */
 	public function init()
 	{
+		// Use the site's logo, link and title on the login screen.
+		if (! apply_filters('siratik_baseline_brand_login', true)) {
+			return;
+		}
+
 		add_action('login_head', [$this, 'custom_login_logo'], 100);
 		add_filter('login_headerurl', [$this, 'update_login_logo_url']);
 		add_filter('login_headertext', [$this, 'update_login_logo_text']);

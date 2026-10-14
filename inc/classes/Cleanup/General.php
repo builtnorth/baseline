@@ -23,6 +23,11 @@ class General
 	 */
 	public function init()
 	{
+		// Remove generator, feed, RSD, wlwmanifest and rel links from wp_head.
+		if (! apply_filters('siratik_baseline_clean_head', true)) {
+			return;
+		}
+
 		add_action('init', [$this, 'remove_actions_from_head']);
 	}
 

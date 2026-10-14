@@ -23,6 +23,11 @@ class AdminBar
 	 */
 	public function init()
 	{
+		// Admin bar cleanup: node removal and the "Howdy" text.
+		if (! apply_filters('siratik_baseline_clean_admin_bar', true)) {
+			return;
+		}
+
 		add_filter('admin_bar_menu', [$this, 'replace_wordpress_howdy'], 9992);
 		add_filter('admin_bar_menu', [$this, 'remove_admin_nodes'], 999);
 	}

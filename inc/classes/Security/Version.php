@@ -23,6 +23,11 @@ class Version
 	 */
 	public function init()
 	{
+		// Hide the WordPress version (generator, admin footer, core asset URLs).
+		if (! apply_filters('siratik_baseline_hide_wp_version', true)) {
+			return;
+		}
+
 		add_filter('the_generator', [$this, 'remove_wp_version_head_and_feeds']);
 		add_action('admin_menu', [$this, 'remove_wp_version_footer'], 9999);
 		add_filter('style_loader_src', [$this, 'replace_wp_version_in_files'], 9999);

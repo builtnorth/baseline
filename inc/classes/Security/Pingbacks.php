@@ -23,6 +23,11 @@ class Pingbacks
 	 */
 	public function init()
 	{
+		// Drop self-pingbacks and the X-Pingback header.
+		if (! apply_filters('siratik_baseline_disable_self_pingbacks', true)) {
+			return;
+		}
+
 		add_action('pre_ping', [$this, 'no_self_ping']);
 		add_filter('wp_headers', [$this, 'remove_x_pingback']);
 	}
