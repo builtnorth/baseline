@@ -164,24 +164,25 @@ class DuplicatePost
 
 		// Verify nonce
 		if (!$post_id || !$nonce || !wp_verify_nonce($nonce, 'duplicate_post_' . $post_id)) {
-			wp_die(__('Security check failed.', 'siratik-baseline'));
+			wp_die(esc_html__('Security check failed.', 'siratik-baseline'));
 		}
 
 		// Get the original post
 		$post = get_post($post_id);
 
 		if (!$post) {
-			wp_die(sprintf(__('Post creation failed, could not find original post: %d', 'siratik-baseline'), $post_id));
+			/* translators: %d: post ID. */
+			wp_die(esc_html(sprintf(__('Post creation failed, could not find original post: %d', 'siratik-baseline'), $post_id)));
 		}
 		
 		// Check if this post type is allowed
 		if (!$this->is_post_type_allowed($post->post_type)) {
-			wp_die(__('This post type cannot be duplicated.', 'siratik-baseline'));
+			wp_die(esc_html__('This post type cannot be duplicated.', 'siratik-baseline'));
 		}
 
 		// Check permissions
 		if (!$this->can_duplicate_post($post)) {
-			wp_die(__('You do not have permission to duplicate this post.', 'siratik-baseline'));
+			wp_die(esc_html__('You do not have permission to duplicate this post.', 'siratik-baseline'));
 		}
 
 		// Create the duplicate
@@ -202,7 +203,7 @@ class DuplicatePost
 			wp_safe_redirect($redirect_url);
 			exit;
 		} else {
-			wp_die(__('Post creation failed', 'siratik-baseline'));
+			wp_die(esc_html__('Post creation failed', 'siratik-baseline'));
 		}
 	}
 

@@ -90,6 +90,6 @@ class Version
 			return filemtime($theme_file);
 		}
 		// Default to today's date
-		return date('Ymd');
+		return gmdate('Ymd');
 	}
 }

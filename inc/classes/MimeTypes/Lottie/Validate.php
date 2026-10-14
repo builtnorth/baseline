@@ -53,6 +53,7 @@ class Validate
 		$max_size = apply_filters('siratik_baseline_lottie_max_file_size', 10 * 1024 * 1024); // 10MB default
 		if ($file['size'] > $max_size) {
 			$file['error'] = sprintf(
+				/* translators: %s: maximum file size, e.g. 10 MB. */
 				__('Lottie file is too large. Maximum size is %s.', 'siratik-baseline'),
 				size_format($max_size)
 			);
