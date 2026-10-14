@@ -111,6 +111,13 @@ class Headers
 			return;
 		}
 
+		// 'enforce' (default), 'report_only' (browsers report violations but
+		// block nothing, for checking a site before enforcing) or 'off'.
+		$mode = apply_filters('siratik_baseline_csp_mode', 'enforce');
+		if (! in_array($mode, ['enforce', 'report_only'], true)) {
+			return;
+		}
+
 		// Get CSP directives
 		$directives = apply_filters('siratik_baseline_security_headers_csp', self::CSP_DIRECTIVES);
 
@@ -119,7 +126,8 @@ class Headers
 
 		// Set CSP header if value is not empty
 		if (!empty($header_value)) {
-			header("Content-Security-Policy: $header_value");
+			$name = $mode === 'report_only' ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
+			header("$name: $header_value");
 		}
 	}
 

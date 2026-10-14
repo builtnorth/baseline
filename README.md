@@ -182,6 +182,14 @@ add_filter('siratik_baseline_security_headers', function($headers) {
 });
 ```
 
+
+The Content-Security-Policy can be sent in report-only mode (browsers report what it would block, without blocking
+anything) or turned off while keeping the other headers:
+
+```php
+add_filter('siratik_baseline_csp_mode', fn () => 'report_only'); // 'enforce' (default), 'report_only' or 'off'
+```
+
 ### Login Security
 
 When enabled (default), login security includes:
