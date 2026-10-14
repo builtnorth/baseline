@@ -13,11 +13,12 @@ namespace Siratik\Baseline\Cleanup {
 	if (!function_exists(__NAMESPACE__ . '\remove_action')) {
 		function remove_action() { return null; }
 		function remove_filter() { return null; }
-		function add_action() { return null; }
-		function add_filter() { return null; }
+		// Hook registrations and option writes are recorded so tests can assert them.
+		function add_action(...$args) { $GLOBALS['siratik_baseline_test_hooks'][] = ['action', ...$args]; return null; }
+		function add_filter(...$args) { $GLOBALS['siratik_baseline_test_hooks'][] = ['filter', ...$args]; return null; }
 		function apply_filters() { return func_get_arg(1); }
 		function __() { return func_get_arg(0); }
-		function update_option() { return true; }
+		function update_option(...$args) { $GLOBALS['siratik_baseline_test_option_writes'][] = $args; return true; }
 		function get_option() { return array(); }
 	}
 }
