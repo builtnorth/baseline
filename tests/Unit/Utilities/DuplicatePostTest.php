@@ -111,4 +111,39 @@ class DuplicatePostTest extends WPMockTestCase {
 
 		$this->assertTrue( $result );
 	}
+
+	/**
+	 * The copy keeps the page template, and meta survives add_post_meta()'s
+	 * unslashing (backslashes in JSON meta used to be stripped).
+	 */
+	public function test_meta_copy_keeps_the_template_and_backslashes() {
+		$json = '{"path":"C:\\\\site","quote":"\\"hi\\""}';
+
+		WP_Mock::userFunction( 'get_post_meta' )->with( 10 )->andReturn(
+			[
+				'_wp_page_template' => [ 'templates/landing.php' ],
+				'_edit_lock'        => [ '123:1' ],
+				'settings_json'     => [ $json ],
+			]
+		);
+		WP_Mock::userFunction( 'maybe_unserialize' )->andReturnUsing( static fn ( $value ) => $value );
+		WP_Mock::userFunction( 'wp_slash' )->andReturnUsing( static fn ( $value ) => addslashes( $value ) );
+
+		$saved = [];
+		WP_Mock::userFunction( 'add_post_meta' )->andReturnUsing(
+			static function ( $post_id, $key, $value ) use ( &$saved ) {
+				// What WordPress stores: add_post_meta() unslashes its input.
+				$saved[ $key ] = stripslashes( $value );
+				return true;
+			}
+		);
+
+		$method = new \ReflectionMethod( DuplicatePost::class, 'duplicate_meta_fields' );
+		$method->setAccessible( true );
+		$method->invoke( new DuplicatePost(), 10, 20 );
+
+		$this->assertSame( 'templates/landing.php', $saved['_wp_page_template'] ?? null );
+		$this->assertArrayNotHasKey( '_edit_lock', $saved );
+		$this->assertSame( $json, $saved['settings_json'] ?? null );
+	}
 }

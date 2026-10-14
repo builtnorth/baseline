@@ -288,7 +288,9 @@ class DuplicatePost
 
 				foreach ($meta_values as $meta_value) {
 					$meta_value = maybe_unserialize($meta_value);
-					add_post_meta($new_id, $meta_key, $meta_value);
+					// add_post_meta() unslashes its value; slash first so backslashes
+					// (JSON, escaped markup) survive the copy.
+					add_post_meta($new_id, $meta_key, wp_slash($meta_value));
 				}
 			}
 		}
@@ -306,7 +308,6 @@ class DuplicatePost
 			'_edit_lock',
 			'_edit_last',
 			'_wp_old_slug',
-			'_wp_page_template',
 		];
 
 		return in_array($meta_key, $skip_meta, true);
