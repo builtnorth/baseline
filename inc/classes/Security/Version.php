@@ -76,20 +76,24 @@ class Version
 
 	/**
 	 * Get the asset version.
+	 *
+	 * A salted hash of the WordPress version: it hides the version, yet changes on
+	 * every core update, so browsers fetch the new core CSS/JS. (The theme's
+	 * style.css mtime used before stayed the same across core updates, so stale
+	 * cached core assets were served.) A theme or plugin constant, if named via
+	 * the filter, is mixed in so its own deploys bust the cache too.
 	 */
 	private function get_asset_version()
 	{
-		// Constant defined by the theme or plugin
+		$seed = (string) get_bloginfo('version');
+
 		$asset_version_constant = apply_filters('siratik_baseline_asset_version_constant', '');
-		if (defined($asset_version_constant)) {
-			return constant($asset_version_constant);
+		if ($asset_version_constant !== '' && defined($asset_version_constant)) {
+			$seed .= '|' . constant($asset_version_constant);
 		}
-		// File modified time from theme
-		$theme_file = get_template_directory() . '/style.css';
-		if (file_exists($theme_file)) {
-			return filemtime($theme_file);
-		}
-		// Default to today's date
-		return gmdate('Ymd');
+
+		$salt = function_exists('wp_salt') ? wp_salt('nonce') : (defined('NONCE_SALT') ? NONCE_SALT : '');
+
+		return substr(hash_hmac('sha256', $seed, $salt), 0, 10);
 	}
 }
