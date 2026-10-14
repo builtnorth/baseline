@@ -41,6 +41,11 @@ class UploadsExecution
 	 */
 	public function block_uploads_php_execution($rules)
 	{
+		// Read each time the rules are built; see XMLRPC::block_xmlrpc_requests().
+		if (! (bool) apply_filters('siratik_baseline_write_htaccess_rules', true)) {
+			return $rules;
+		}
+
 		$uploads = wp_get_upload_dir();
 		$basedir = wp_normalize_path($uploads['basedir']);
 		$abspath = wp_normalize_path(ABSPATH);

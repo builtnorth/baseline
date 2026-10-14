@@ -65,6 +65,12 @@ class XMLRPC
 	 */
 	public function block_xmlrpc_requests($rules)
 	{
+		// Read each time the rules are built, so a late filter wins (e.g. a
+		// host removing the rules on deactivation before a final flush).
+		if (! (bool) apply_filters('siratik_baseline_write_htaccess_rules', true)) {
+			return $rules;
+		}
+
 		return "
 		# Block XML-RPC requests
 		<Files xmlrpc.php>

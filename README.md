@@ -386,6 +386,16 @@ location ~* /wp-content/uploads/.*\.(?:php|phtml|php\d?|phar)$ {
 }
 ```
 
+### `.htaccess` Rules
+
+The XML-RPC deny and the uploads PHP block are added to `.htaccess` through WordPress's `mod_rewrite_rules` filter, so they are written whenever rewrite rules are flushed. To keep them out of `.htaccess` without turning the features off (for example while a plugin that uses Baseline is being deactivated, before its final flush):
+
+```php
+add_filter('siratik_baseline_write_htaccess_rules', '__return_false');
+```
+
+The filter is read each time the rules are built, so adding it right before `flush_rewrite_rules(true)` removes both rules from the file.
+
 ## Disclaimer
 
 This software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
