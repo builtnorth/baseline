@@ -11,12 +11,23 @@
 // Cleanup namespace functions
 namespace Siratik\Baseline\Cleanup {
 	if (!function_exists(__NAMESPACE__ . '\remove_action')) {
-		function remove_action() { return null; }
-		function remove_filter() { return null; }
-		// Hook registrations and option writes are recorded so tests can assert them.
+		// Removals, hook registrations and option writes are recorded so tests can assert them.
+		function remove_action(...$args) { $GLOBALS['siratik_baseline_test_removed'][] = ['action', ...$args]; return null; }
+		function remove_filter(...$args) { $GLOBALS['siratik_baseline_test_removed'][] = ['filter', ...$args]; return null; }
 		function add_action(...$args) { $GLOBALS['siratik_baseline_test_hooks'][] = ['action', ...$args]; return null; }
 		function add_filter(...$args) { $GLOBALS['siratik_baseline_test_hooks'][] = ['filter', ...$args]; return null; }
-		function apply_filters() { return func_get_arg(1); }
+		// Tests can force a filter's result via $GLOBALS['siratik_baseline_test_filters'][ $hook ].
+		function apply_filters($hook, $value = null) {
+			$forced = $GLOBALS['siratik_baseline_test_filters'] ?? [];
+			return array_key_exists($hook, $forced) ? $forced[$hook] : $value;
+		}
+		// Request state tests set through $GLOBALS['siratik_baseline_test_state'].
+		function is_admin() { return !empty($GLOBALS['siratik_baseline_test_state']['admin']); }
+		function is_user_logged_in() { return !empty($GLOBALS['siratik_baseline_test_state']['logged_in']); }
+		function did_action($hook) { return (int) ($GLOBALS['siratik_baseline_test_state']['did'][$hook] ?? 0); }
+		function wp_scripts() { return $GLOBALS['siratik_baseline_test_state']['scripts'] ?? null; }
+		function wp_dequeue_style($handle) { $GLOBALS['siratik_baseline_test_dequeued'][] = ['style', $handle]; }
+		function wp_dequeue_script($handle) { $GLOBALS['siratik_baseline_test_dequeued'][] = ['script', $handle]; }
 		function __() { return func_get_arg(0); }
 		function update_option(...$args) { $GLOBALS['siratik_baseline_test_option_writes'][] = $args; return true; }
 		function get_option() { return array(); }

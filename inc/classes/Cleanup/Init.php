@@ -35,9 +35,13 @@ class Init extends AbstractInit
 	{
 		return [
 			'AdminBar',
+			'CartFragments',
 			'Dashboard',
+			'Embeds',
 			'Emoji',
+			'FrontendDashicons',
 			'General',
+			'JqueryMigrate',
 			'Login',
 			'Mail',
 			'Widgets',
