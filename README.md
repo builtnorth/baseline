@@ -217,7 +217,7 @@ add_filter('siratik_baseline_login_security', '__return_false');
 
 ### REST API User Endpoints
 
-REST API user endpoints are restricted to users with the `list_users` capability by default. To disable this restriction and make the user endpoint publicly accessible again use this filter:
+REST API user endpoints are hidden by default from anyone without the `edit_posts` capability (the block editor needs them). To disable this restriction and make the user endpoint publicly accessible again use this filter:
 
 ```php
 add_filter('siratik_baseline_disable_user_rest_endpoints', '__return_false');

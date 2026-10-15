@@ -40,8 +40,9 @@ class RestAPI
 	 */
 	public function restrict_user_endpoints($endpoints)
 	{
-		// Check if user has appropriate capabilities
-		if (!current_user_can('list_users')) {
+		// Hidden from visitors only: the block editor reads these routes
+		// (current user, author picker) for anyone who can edit posts.
+		if (!current_user_can('edit_posts')) {
 			if (isset($endpoints['/wp/v2/users'])) {
 				unset($endpoints['/wp/v2/users']);
 			}
