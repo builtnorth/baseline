@@ -89,11 +89,12 @@ class Headers
 
 		// Apply security headers
 		$headers = apply_filters('siratik_baseline_security_headers', self::SECURITY_HEADERS);
-		$is_ssl = is_ssl();
+		// HSTS has its own gate: browsers keep it for a year, for every subdomain.
+		$send_hsts = is_ssl() && (bool) apply_filters('siratik_baseline_enable_hsts', true);
 
 		// Loop through headers and set them
 		foreach ($headers as $name => $value) {
-			if ('Strict-Transport-Security' === $name && !$is_ssl) {
+			if ('Strict-Transport-Security' === $name && !$send_hsts) {
 				continue;
 			}
 
