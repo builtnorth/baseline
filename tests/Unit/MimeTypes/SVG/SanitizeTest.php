@@ -205,4 +205,45 @@ class SanitizeTest extends WPMockTestCase {
 		
 		$this->assertEquals( $file, $result );
 	}
+
+	/**
+	 * Both upload paths are sanitized: wp_handle_sideload() (REST raw-body
+	 * uploads) fires its own prefilter, not wp_handle_upload_prefilter.
+	 */
+	public function test_init_hooks_upload_and_sideload_prefilters() {
+		$GLOBALS['siratik_baseline_test_hooks'] = [];
+		$sanitize = new Sanitize();
+
+		$sanitize->init();
+
+		$hooks = $GLOBALS['siratik_baseline_test_hooks'];
+		$this->assertContains( [ 'filter', 'wp_handle_upload_prefilter', [ $sanitize, 'sanitize_svg' ] ], $hooks );
+		$this->assertContains( [ 'filter', 'wp_handle_sideload_prefilter', [ $sanitize, 'sanitize_svg' ] ], $hooks );
+	}
+
+	/**
+	 * A sideloaded file array (name + tmp_name, no size) has its script stripped.
+	 */
+	public function test_sanitize_svg_cleans_a_sideloaded_file() {
+		if (!class_exists('\enshrined\svgSanitize\Sanitizer')) {
+			$this->markTestSkipped('SVG Sanitizer library not available');
+		}
+
+		$tmp_name = tempnam( sys_get_temp_dir(), 'svg' );
+		file_put_contents( $tmp_name, '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script><circle r="4"/></svg>' );
+
+		WP_Mock::userFunction( 'current_user_can' )->andReturn( true );
+
+		$result = ( new Sanitize() )->sanitize_svg( [
+			'name'     => 'payload.svg',
+			'tmp_name' => $tmp_name,
+		] );
+
+		$clean = (string) file_get_contents( $tmp_name );
+		unlink( $tmp_name );
+
+		$this->assertArrayNotHasKey( 'error', $result );
+		$this->assertStringNotContainsString( '<script', $clean );
+		$this->assertStringContainsString( '<circle', $clean );
+	}
 }

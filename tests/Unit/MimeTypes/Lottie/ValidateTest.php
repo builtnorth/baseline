@@ -187,4 +187,19 @@ class ValidateTest extends WPMockTestCase {
 
 		return $path;
 	}
+
+	/**
+	 * Both upload paths are validated: wp_handle_sideload() (REST raw-body
+	 * uploads) fires its own prefilter, not wp_handle_upload_prefilter.
+	 */
+	public function test_init_hooks_upload_and_sideload_prefilters() {
+		$validate = new Validate();
+
+		WP_Mock::expectFilterAdded( 'wp_handle_upload_prefilter', [ $validate, 'validate_lottie_files' ] );
+		WP_Mock::expectFilterAdded( 'wp_handle_sideload_prefilter', [ $validate, 'validate_lottie_files' ] );
+
+		$validate->init();
+
+		$this->assertConditionsMet();
+	}
 }

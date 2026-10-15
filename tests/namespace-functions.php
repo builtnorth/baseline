@@ -50,7 +50,8 @@ namespace Siratik\Baseline\MimeTypes {
 // MimeTypes\SVG namespace functions
 namespace Siratik\Baseline\MimeTypes\SVG {
 	if (!function_exists(__NAMESPACE__ . '\add_filter')) {
-		function add_filter() { return null; }
+		// Hook registrations are recorded so tests can assert them.
+		function add_filter(...$args) { $GLOBALS['siratik_baseline_test_hooks'][] = ['filter', ...$args]; return null; }
 		function current_user_can() { return false; }
 		function __() { return func_get_arg(0); }
 		function wp_die() { die(); }

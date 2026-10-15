@@ -29,6 +29,9 @@ class Sanitize
 		// are enabled. Sites can opt out with __return_false.
 		if (apply_filters('siratik_baseline_sanitize_json_uploads', true)) {
 			add_filter('wp_handle_upload_prefilter', [$this, 'sanitize_json_files']);
+			// REST raw-body uploads go through wp_handle_sideload(), which fires
+			// its own prefilter, not the upload one.
+			add_filter('wp_handle_sideload_prefilter', [$this, 'sanitize_json_files']);
 		}
 	}
 

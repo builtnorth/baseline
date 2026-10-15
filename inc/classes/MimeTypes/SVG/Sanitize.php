@@ -24,6 +24,9 @@ class Sanitize
 	public function init()
 	{
 		add_filter('wp_handle_upload_prefilter', [$this, 'sanitize_svg']);
+		// wp_handle_sideload() (REST raw-body uploads, media_handle_sideload())
+		// fires its own prefilter, not the upload one.
+		add_filter('wp_handle_sideload_prefilter', [$this, 'sanitize_svg']);
 	}
 
 	/**

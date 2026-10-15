@@ -28,6 +28,8 @@ class Validate
 		// Only add validation if enabled (default: true)
 		if (apply_filters('siratik_baseline_validate_lottie_uploads', true)) {
 			add_filter('wp_handle_upload_prefilter', [$this, 'validate_lottie_files']);
+			// wp_handle_sideload() (REST raw-body uploads) fires its own prefilter.
+			add_filter('wp_handle_sideload_prefilter', [$this, 'validate_lottie_files']);
 		}
 	}
 
