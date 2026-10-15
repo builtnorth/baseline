@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * ------------------------------------------------------------------
  * Login
@@ -34,16 +36,33 @@ class Login
 	];
 
 	/**
+	 * Whether sign-in requires an email address (usernames are rejected).
+	 */
+	private bool $email_only = false;
+
+	/**
 	 * Initialize the class
+	 *
+	 * Two decisions:
+	 * - `siratik_baseline_login_security`: email-only sign-in, with the
+	 *   "Email address" label and login form tweaks.
+	 * - `siratik_baseline_generic_login_errors`: one generic error for failed
+	 *   sign-ins and a cleared login field. Follows the email-only decision
+	 *   unless filtered.
 	 */
 	public function init()
 	{
-		if ((bool) apply_filters('siratik_baseline_login_security', true)) {
+		$this->email_only = (bool) apply_filters('siratik_baseline_login_security', true);
+
+		if ($this->email_only) {
 			add_filter('authenticate', [$this, 'prevent_username_login'], 30, 3);
-			add_filter('wp_login_errors', [$this, 'prevent_login_field_repopulation'], 10, 2);
-			add_filter('login_errors', [$this, 'generic_login_error']);
 			add_action('login_init', [$this, 'register_login_label_filter']);
 			add_action('login_enqueue_scripts', [$this, 'customize_login_form']);
+		}
+
+		if ((bool) apply_filters('siratik_baseline_generic_login_errors', $this->email_only)) {
+			add_filter('wp_login_errors', [$this, 'prevent_login_field_repopulation'], 10, 2);
+			add_filter('login_errors', [$this, 'generic_login_error']);
 		}
 	}
 
@@ -91,7 +110,7 @@ class Login
 	}
 
 	/**
-	 * Returns a generic login error message.
+	 * Returns a generic login error message, naming usernames only when they are allowed.
 	 *
 	 * @param string $errors HTML error messages from the login screen.
 	 */
@@ -107,7 +126,11 @@ class Login
 			return $this->username_login_error_message();
 		}
 
-		return __('The email address or password you entered is incorrect.', 'siratik-baseline');
+		if ($this->email_only) {
+			return __('The email address or password you entered is incorrect.', 'siratik-baseline');
+		}
+
+		return __('The username, email address or password you entered is incorrect.', 'siratik-baseline');
 	}
 
 	/**

@@ -199,20 +199,30 @@ add_filter('siratik_baseline_enable_hsts', '__return_false');
 
 ### Login Security
 
-When enabled (default), login security includes:
+When enabled (default), email-only sign-in includes:
 
-- Require email address for sign-in (username attempts are rejected)
+- Require email address for sign-in (username attempts are rejected with a specific message)
 - Update the login field label and placeholder to "Email address"
-- Return a generic login error message for credential failures (username-format attempts show a specific message)
-- Always clear the login field after a failed sign-in attempt
 - Disable browser autocomplete on login fields
+
+Generic login errors (on by default, following the email-only setting) include:
+
+- Return one generic login error message for credential failures ("The email address or password you entered is incorrect." with email-only sign-in, "The username, email address or password you entered is incorrect." without)
+- Always clear the login field after a failed sign-in attempt
 
 WordPress normally repopulates the login field when the submitted email exists but the password is wrong, while clearing it for unknown emails. That behavior leaks account existence even with a generic error message. This package remaps those core error codes so the field is always cleared after failure.
 
-To disable login security enhancements, use the following filter:
+To disable email-only sign-in, use the following filter (generic login errors follow it unless filtered separately):
 
 ```php
 add_filter('siratik_baseline_login_security', '__return_false');
+```
+
+To decide generic login errors on their own, for example to keep them with username sign-in allowed:
+
+```php
+add_filter('siratik_baseline_login_security', '__return_false');
+add_filter('siratik_baseline_generic_login_errors', '__return_true');
 ```
 
 ### REST API User Endpoints
