@@ -47,7 +47,7 @@ class Login
 ?>
 			<style type="text/css">
 				.login h1 a {
-					background-image: url(<?php echo esc_url($image[0]); ?>);
+					background-image: url("<?php echo esc_url_raw(str_replace(['"', '\\', '<', '>', "\n", "\r"], '', $image[0])); ?>");
 					background-repeat: no-repeat;
 					background-size: contain;
 					width: auto;
