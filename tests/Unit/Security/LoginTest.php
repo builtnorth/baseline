@@ -46,7 +46,7 @@ class LoginTest extends WPMockTestCase {
 		$hooks = $this->registered_hooks( new Login() );
 
 		$this->assertSame(
-			[ 'authenticate', 'login_init', 'login_enqueue_scripts', 'wp_login_errors', 'login_errors' ],
+			[ 'authenticate', 'authenticate', 'authenticate', 'login_init', 'login_enqueue_scripts', 'wp_login_errors', 'login_errors' ],
 			$hooks
 		);
 	}
@@ -77,7 +77,7 @@ class LoginTest extends WPMockTestCase {
 		$GLOBALS['siratik_baseline_test_filters']['siratik_baseline_generic_login_errors'] = false;
 
 		$this->assertSame(
-			[ 'authenticate', 'login_init', 'login_enqueue_scripts' ],
+			[ 'authenticate', 'authenticate', 'authenticate', 'login_init', 'login_enqueue_scripts' ],
 			$this->registered_hooks( new Login() )
 		);
 	}
@@ -141,5 +141,79 @@ class LoginTest extends WPMockTestCase {
 		$login->init();
 
 		$this->assertSame( '', $login->generic_login_error( '' ) );
+	}
+
+	/**
+	 * Run the authenticate chain as core would: the check before core's
+	 * password callbacks (19), their result, anything in between, then 30.
+	 *
+	 * @param mixed $before Result before core (another plugin at < 19).
+	 * @param mixed $core   Result after core's callbacks (20).
+	 * @param mixed $later  Result after callbacks between 21 and 30.
+	 * @return mixed
+	 */
+	private function authenticate( Login $login, $before, $core, $later, string $username ) {
+		$login->note_user_before_core( $before );
+		$login->note_user_after_core( $core );
+
+		return $login->prevent_username_login( $later, $username, 'secret' );
+	}
+
+	/**
+	 * Core's username+password sign-in is still held to email-only.
+	 */
+	public function test_core_username_sign_in_is_refused(): void {
+		WP_Mock::userFunction( 'is_email' )->andReturn( false );
+		$login = new Login();
+		$user  = new \WP_User();
+
+		$this->assertInstanceOf( \WP_Error::class, $this->authenticate( $login, null, $user, $user, 'admin' ) );
+	}
+
+	/**
+	 * A plugin that signs in by username after core (LDAP, single sign-on)
+	 * is left alone.
+	 */
+	public function test_a_later_plugin_sign_in_by_username_is_kept(): void {
+		WP_Mock::userFunction( 'is_email' )->andReturn( false );
+		$login = new Login();
+		$user  = new \WP_User();
+
+		$this->assertSame( $user, $this->authenticate( $login, null, new \WP_Error( 'incorrect_password', 'x' ), $user, 'jdoe' ) );
+	}
+
+	/**
+	 * A plugin that signed in before core's password check is left alone.
+	 */
+	public function test_an_earlier_plugin_sign_in_by_username_is_kept(): void {
+		WP_Mock::userFunction( 'is_email' )->andReturn( false );
+		$login = new Login();
+		$user  = new \WP_User();
+
+		$this->assertSame( $user, $this->authenticate( $login, $user, $user, $user, 'jdoe' ) );
+	}
+
+	/**
+	 * Email sign-ins pass whatever produced them.
+	 */
+	public function test_email_sign_in_is_kept(): void {
+		WP_Mock::userFunction( 'is_email' )->andReturn( true );
+		$login = new Login();
+		$user  = new \WP_User();
+
+		$this->assertSame( $user, $this->authenticate( $login, null, $user, $user, 'jdoe@example.com' ) );
+	}
+
+	/**
+	 * A failed username attempt still gets the email-only error.
+	 */
+	public function test_failed_username_attempt_gets_email_only_error(): void {
+		WP_Mock::userFunction( 'is_email' )->andReturn( false );
+		$login = new Login();
+
+		$result = $this->authenticate( $login, null, null, new \WP_Error( 'incorrect_password', 'x' ), 'admin' );
+
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertSame( 'invalid_email', $result->get_error_code() );
 	}
 }

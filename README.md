@@ -249,6 +249,14 @@ XMLRPC is disabled by default. To re-enable it, use the following filter:
 add_filter('siratik_baseline_disable_xmlrpc', '__return_false');
 ```
 
+XML-RPC stays open while Jetpack is active, since its connection and sync use it. To mark another plugin as needing XML-RPC (or to block it even with Jetpack):
+
+```php
+add_filter('siratik_baseline_xmlrpc_required', '__return_true');
+```
+
+When the XML-RPC state changes (the filter above, the disable filter, or Jetpack being activated or deactivated), the rewrite rules are flushed once on the next admin page load, so the `.htaccess` deny is added or removed right away.
+
 ### SVG Support
 
 Adds support for SVG uploads. SVGs are automatically sanitized upon upload using the [enshrined/svg-sanitize](https://github.com/darylldoyle/svg-sanitizer) library for security to remove potentially malicious content.

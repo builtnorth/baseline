@@ -41,6 +41,18 @@ class Login
 	private bool $email_only = false;
 
 	/**
+	 * Whether the authenticate result was already a user before core's
+	 * password callbacks (priority 20) ran, i.e. another plugin signed in.
+	 */
+	private bool $user_before_core = false;
+
+	/**
+	 * Whether the authenticate result was a user right after core's
+	 * password callbacks ran.
+	 */
+	private bool $user_after_core = false;
+
+	/**
 	 * Initialize the class
 	 *
 	 * Two decisions:
@@ -55,6 +67,11 @@ class Login
 		$this->email_only = (bool) apply_filters('siratik_baseline_login_security', true);
 
 		if ($this->email_only) {
+			// 19 and 21 bracket core's password callbacks (20), so the check at
+			// 30 can tell a core username+password sign-in from one another
+			// plugin (LDAP, single sign-on) produced.
+			add_filter('authenticate', [$this, 'note_user_before_core'], 19, 1);
+			add_filter('authenticate', [$this, 'note_user_after_core'], 21, 1);
 			add_filter('authenticate', [$this, 'prevent_username_login'], 30, 3);
 			add_action('login_init', [$this, 'register_login_label_filter']);
 			add_action('login_enqueue_scripts', [$this, 'customize_login_form']);
@@ -67,7 +84,41 @@ class Login
 	}
 
 	/**
-	 * Prevents username login
+	 * Filter: authenticate (19). Notes whether a user was signed in before
+	 * core's password callbacks.
+	 *
+	 * @param mixed $user Authentication result so far.
+	 * @return mixed Unchanged.
+	 */
+	public function note_user_before_core($user)
+	{
+		$this->user_before_core = $user instanceof \WP_User;
+		$this->user_after_core  = false;
+
+		return $user;
+	}
+
+	/**
+	 * Filter: authenticate (21). Notes whether a user was signed in once
+	 * core's password callbacks ran.
+	 *
+	 * @param mixed $user Authentication result so far.
+	 * @return mixed Unchanged.
+	 */
+	public function note_user_after_core($user)
+	{
+		$this->user_after_core = $user instanceof \WP_User;
+
+		return $user;
+	}
+
+	/**
+	 * Prevents username login.
+	 *
+	 * Only the WordPress password sign-in is held to email-only: a user that
+	 * another authenticate callback produced (before core's password check,
+	 * or between it and this one) is left alone, so LDAP and single sign-on
+	 * plugins that sign in by username keep working.
 	 */
 	public function prevent_username_login($user, $username, $password)
 	{
@@ -77,6 +128,10 @@ class Login
 		}
 
 		if (is_email($username)) {
+			return $user;
+		}
+
+		if ($user instanceof \WP_User && ($this->user_before_core || ! $this->user_after_core)) {
 			return $user;
 		}
 

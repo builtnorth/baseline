@@ -10,11 +10,17 @@ namespace Siratik\Baseline\Tests\Unit\Security;
 use BuiltNorth\WPMockStandIns\WPMockTestCase;
 use Siratik\Baseline\Security\DisabledXmlrpcServer;
 use Siratik\Baseline\Security\XMLRPC;
+use WP_Mock;
 
 /**
  * XMLRPC test case
  */
 class XMLRPCTest extends WPMockTestCase {
+
+	public function tearDown(): void {
+		unset( $GLOBALS['siratik_baseline_test_hooks'], $GLOBALS['siratik_baseline_test_filters'] );
+		parent::tearDown();
+	}
 
 	/**
 	 * Core's xmlrpc.php does `new $class()` on the filtered server class, so a
@@ -52,5 +58,57 @@ class XMLRPCTest extends WPMockTestCase {
 		$this->assertStringContainsString( '<IfModule mod_authz_core.c>', $rules );
 		$this->assertStringContainsString( 'Require all denied', $rules );
 		$this->assertStringContainsString( '<IfModule !mod_authz_core.c>', $rules );
+	}
+
+	/**
+	 * While a plugin needs XML-RPC (Jetpack), nothing is switched off and the
+	 * server rules carry no deny.
+	 */
+	public function test_nothing_is_blocked_while_a_plugin_needs_xmlrpc(): void {
+		$GLOBALS['siratik_baseline_test_filters']['siratik_baseline_xmlrpc_required'] = true;
+		$GLOBALS['siratik_baseline_test_hooks']                                       = [];
+		$xmlrpc = new XMLRPC();
+
+		$xmlrpc->init();
+
+		$this->assertFalse( XMLRPC::is_blocked() );
+		$hooks = array_column( $GLOBALS['siratik_baseline_test_hooks'], 1 );
+		$this->assertNotContains( 'xmlrpc_enabled', $hooks );
+		$this->assertContains( 'mod_rewrite_rules', $hooks, 'Rules still rebuild, so a stale deny is removed.' );
+		$this->assertSame( '# core', $xmlrpc->block_xmlrpc_requests( '# core' ) );
+	}
+
+	/**
+	 * Switching the block off removes the deny from the rules.
+	 */
+	public function test_switched_off_rules_carry_no_deny(): void {
+		$GLOBALS['siratik_baseline_test_filters']['siratik_baseline_disable_xmlrpc'] = false;
+
+		$this->assertSame( '# core', ( new XMLRPC() )->block_xmlrpc_requests( '# core' ) );
+	}
+
+	/**
+	 * The rules are rewritten (hard flush) once when the state changes.
+	 */
+	public function test_rules_are_rewritten_once_when_the_state_changes(): void {
+		WP_Mock::userFunction( 'get_option' )->with( XMLRPC::RULES_STATE_OPTION )->andReturn( 'open' );
+		WP_Mock::userFunction( 'update_option' )->once()->with( XMLRPC::RULES_STATE_OPTION, 'blocked', true );
+		WP_Mock::userFunction( 'flush_rewrite_rules' )->once()->with( true );
+
+		( new XMLRPC() )->refresh_server_rules();
+
+		$this->assertConditionsMet();
+	}
+
+	/**
+	 * No rewrite when the rules already match the state.
+	 */
+	public function test_rules_are_left_alone_when_the_state_is_unchanged(): void {
+		WP_Mock::userFunction( 'get_option' )->with( XMLRPC::RULES_STATE_OPTION )->andReturn( 'blocked' );
+		WP_Mock::userFunction( 'flush_rewrite_rules' )->never();
+
+		( new XMLRPC() )->refresh_server_rules();
+
+		$this->assertConditionsMet();
 	}
 }
