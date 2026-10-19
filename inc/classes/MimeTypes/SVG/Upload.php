@@ -30,6 +30,7 @@ class Upload
 		add_filter('upload_mimes', [$this, 'add_svg_mime_type']);
 		add_filter('wp_check_filetype_and_ext', [$this, 'check_svg_filetype'], 10, 4);
 		add_filter('wp_generate_attachment_metadata', [$this, 'add_svg_dimensions'], 10, 2);
+		add_filter('wp_get_attachment_metadata', [$this, 'backfill_svg_dimensions'], 10, 2);
 		add_action('admin_head', [$this, 'fix_svg_thumbnail_display']);
 	}
 
@@ -100,6 +101,60 @@ class Upload
 
 		return $metadata;
 	}
+
+	/**
+	 * Give SVGs uploaded before their size was recorded a width and height
+	 * the first time their metadata is read, and save it so it happens once.
+	 *
+	 * An SVG with no usable size is remembered (against the file's
+	 * modification time) so it isn't read again on every request.
+	 *
+	 * @param mixed $data          Attachment metadata (false or '' when none was stored).
+	 * @param mixed $attachment_id Attachment ID.
+	 * @return mixed
+	 */
+	public function backfill_svg_dimensions($data, $attachment_id)
+	{
+		static $checked = [];
+
+		$id = (int) $attachment_id;
+		if ($id <= 0 || isset($checked[$id]) || (is_array($data) && !empty($data['width']))) {
+			return $data;
+		}
+		$checked[$id] = true;
+
+		if ('image/svg+xml' !== get_post_mime_type($id)) {
+			return $data;
+		}
+
+		$file = get_attached_file($id);
+		if (!$file || !is_readable($file)) {
+			return $data;
+		}
+
+		$mtime = (int) @filemtime($file);
+		if ((int) get_post_meta($id, self::UNSIZED_META, true) === $mtime) {
+			return $data;
+		}
+
+		$metadata = $this->add_svg_dimensions(is_array($data) ? $data : [], $id);
+		if (empty($metadata['width'])) {
+			update_post_meta($id, self::UNSIZED_META, $mtime);
+			return $data;
+		}
+
+		if (empty($metadata['file'])) {
+			$metadata['file'] = _wp_relative_upload_path($file);
+		}
+
+		wp_update_attachment_metadata($id, $metadata);
+		delete_post_meta($id, self::UNSIZED_META);
+
+		return $metadata;
+	}
+
+	/** Post meta marking an SVG with no usable size (value: file mtime). */
+	public const UNSIZED_META = '_siratik_baseline_svg_unsized';
 
 	/**
 	 * Read width and height from an SVG's root element.

@@ -154,4 +154,58 @@ class UploadTest extends WPMockTestCase {
 
 		$this->assertSame( [ 'filesize' => 10 ], ( new Upload() )->add_svg_dimensions( [ 'filesize' => 10 ], 13 ) );
 	}
+
+	/**
+	 * An SVG uploaded before sizes were recorded gets one the first time its
+	 * metadata is read, and it is saved so this happens once.
+	 */
+	public function test_old_svg_uploads_are_given_a_size_once() {
+		$file = tempnam( sys_get_temp_dir(), 'svg' );
+		file_put_contents( $file, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80"></svg>' );
+
+		WP_Mock::userFunction( 'get_post_mime_type' )->with( 9101 )->andReturn( 'image/svg+xml' );
+		WP_Mock::userFunction( 'get_attached_file' )->with( 9101 )->andReturn( $file );
+		WP_Mock::userFunction( 'get_post_meta' )->andReturn( '' );
+		WP_Mock::userFunction( '_wp_relative_upload_path' )->andReturn( '2020/01/logo.svg' );
+		WP_Mock::userFunction( 'delete_post_meta' )->andReturn( true );
+		WP_Mock::userFunction( 'wp_update_attachment_metadata' )
+			->once()
+			->with( 9101, [ 'width' => 120, 'height' => 80, 'file' => '2020/01/logo.svg' ] )
+			->andReturn( true );
+
+		$upload = new Upload();
+		$first  = $upload->backfill_svg_dimensions( '', 9101 );
+		// Later reads in the same request are left alone.
+		$upload->backfill_svg_dimensions( '', 9101 );
+
+		unlink( $file );
+		$this->assertSame( 120, $first['width'] );
+		$this->assertSame( 80, $first['height'] );
+	}
+
+	/**
+	 * An SVG with no usable size is remembered against its file, so the
+	 * file is not read again on later requests.
+	 */
+	public function test_an_unsizable_svg_is_remembered() {
+		$file = tempnam( sys_get_temp_dir(), 'svg' );
+		file_put_contents( $file, '<svg xmlns="http://www.w3.org/2000/svg" width="100%"></svg>' );
+
+		WP_Mock::userFunction( 'get_post_mime_type' )->with( 9102 )->andReturn( 'image/svg+xml' );
+		WP_Mock::userFunction( 'get_attached_file' )->with( 9102 )->andReturn( $file );
+		WP_Mock::userFunction( 'get_post_meta' )->andReturn( '' );
+		WP_Mock::userFunction( 'update_post_meta' )
+			->once()
+			->with( 9102, Upload::UNSIZED_META, filemtime( $file ) )
+			->andReturn( true );
+
+		$this->assertSame( [ 'alt' => 'x' ], ( new Upload() )->backfill_svg_dimensions( [ 'alt' => 'x' ], 9102 ) );
+		unlink( $file );
+	}
+
+	public function test_metadata_with_a_width_is_untouched() {
+		$data = [ 'width' => 10, 'height' => 10 ];
+
+		$this->assertSame( $data, ( new Upload() )->backfill_svg_dimensions( $data, 9103 ) );
+	}
 }
