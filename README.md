@@ -1,4 +1,4 @@
-# Baseline
+# Siratik Baseline
 
 This package provides baseline functionality for WordPress. Some of the functionality includes:
 
@@ -442,3 +442,7 @@ Use of this library is at your own risk. The authors and contributors of this pr
 While we strive to keep this library up-to-date and secure, we make no guarantees about its performance, reliability, or suitability for any particular purpose. Users are advised to thoroughly test the library in a safe environment before deploying it to a live site.
 
 By using this library, you acknowledge that you have read this disclaimer and agree to its terms.
+
+## License
+
+GPL-3.0-or-later — see `LICENSE`.
