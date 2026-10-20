@@ -13,6 +13,9 @@
 
 namespace Siratik\Baseline\Comments;
 
+// Don't load directly.
+defined('ABSPATH') || defined('WP_CLI') || exit;
+
 class Filters
 {
 	/**

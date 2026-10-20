@@ -16,6 +16,9 @@ namespace Siratik\Baseline\MimeTypes\SVG;
 use Siratik\Baseline\MimeTypes\Capability;
 use enshrined\svgSanitize\Sanitizer;
 
+// Don't load directly.
+defined('ABSPATH') || defined('WP_CLI') || exit;
+
 class Sanitize
 {
 	/**
