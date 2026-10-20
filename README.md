@@ -235,10 +235,16 @@ add_filter('siratik_baseline_disable_user_rest_endpoints', '__return_false');
 
 ### Author Enumeration
 
-Requests like `?author=2` are blocked with a 404 by default for anyone without the `list_users` capability, instead of being redirected to `/author/username/` and revealing a valid username. Author archive URLs themselves (`/author/username/`) are unaffected. To disable this:
+Requests like `?author=2` (in the URL or a POST body) are blocked with a 404 by default for anyone without the `list_users` capability, instead of being redirected to `/author/username/` and revealing a valid username. Author archive URLs themselves (`/author/username/`) are unaffected. The same setting removes WordPress's users sitemap, points the oEmbed `author_url` at the home page and drops the `comment-author-{slug}` comment class, since each one shows a user's slug. To disable all of this:
 
 ```php
 add_filter('siratik_baseline_block_author_enumeration', '__return_false');
+```
+
+To keep the users sitemap while blocking the rest:
+
+```php
+add_filter('siratik_baseline_remove_users_sitemap', '__return_false');
 ```
 
 ### XMLRPC
