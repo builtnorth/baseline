@@ -190,11 +190,17 @@ anything) or turned off while keeping the other headers:
 add_filter('siratik_baseline_csp_mode', fn () => 'report_only'); // 'enforce' (default), 'report_only' or 'off'
 ```
 
-On HTTPS, Strict-Transport-Security (`max-age=31536000; includeSubDomains`) is sent with the other headers. Browsers
-remember it for a year for every subdomain, so it has its own switch:
+On HTTPS, Strict-Transport-Security (`max-age=31536000`) is sent with the other headers. Browsers remember it for a
+year, so it has its own switch:
 
 ```php
 add_filter('siratik_baseline_enable_hsts', '__return_false');
+```
+
+To cover every subdomain as well (only when all of them serve HTTPS):
+
+```php
+add_filter('siratik_baseline_hsts_include_subdomains', '__return_true');
 ```
 
 ### Login Security

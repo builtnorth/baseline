@@ -26,10 +26,12 @@ class Headers
 	private const SECURITY_HEADERS = [
 		'X-Content-Type-Options' => 'nosniff',
 		'X-Frame-Options' => 'SAMEORIGIN',
-		'X-XSS-Protection' => '1; mode=block',
+		// '0' turns off the legacy XSS auditor; '1; mode=block' could itself be
+		// abused to leak data and is ignored by current browsers.
+		'X-XSS-Protection' => '0',
 		'Referrer-Policy' => 'strict-origin-when-cross-origin',
 		'Permissions-Policy' => 'geolocation=(), microphone=()',
-		'Strict-Transport-Security' => 'max-age=31536000; includeSubDomains',
+		'Strict-Transport-Security' => 'max-age=31536000',
 	];
 
 	/**
@@ -89,17 +91,36 @@ class Headers
 
 		// Apply security headers
 		$headers = apply_filters('siratik_baseline_security_headers', self::SECURITY_HEADERS);
-		// HSTS has its own gate: browsers keep it for a year, for every subdomain.
+		// HSTS has its own gate: browsers keep it for a year.
 		$send_hsts = is_ssl() && (bool) apply_filters('siratik_baseline_enable_hsts', true);
 
 		// Loop through headers and set them
 		foreach ($headers as $name => $value) {
-			if ('Strict-Transport-Security' === $name && !$send_hsts) {
-				continue;
+			if ('Strict-Transport-Security' === $name) {
+				if (!$send_hsts) {
+					continue;
+				}
+				$value = $this->hsts_value((string) $value);
 			}
 
 			header("$name: $value");
 		}
+	}
+
+	/**
+	 * HSTS value, with includeSubDomains only when the site opts in: browsers
+	 * then refuse plain HTTP on every subdomain for the whole max-age.
+	 */
+	private function hsts_value(string $value): string
+	{
+		if (
+			(bool) apply_filters('siratik_baseline_hsts_include_subdomains', false)
+			&& false === stripos($value, 'includeSubDomains')
+		) {
+			$value .= '; includeSubDomains';
+		}
+
+		return $value;
 	}
 
 	/**

@@ -119,4 +119,30 @@ class HeadersTest extends WPMockTestCase {
 		
 		$this->assertConditionsMet();
 	}
+
+	/**
+	 * HSTS covers subdomains only when the site opts in.
+	 */
+	public function test_hsts_include_subdomains_is_opt_in() {
+		$method = new \ReflectionMethod( Headers::class, 'hsts_value' );
+		$method->setAccessible( true );
+		$headers = new Headers();
+
+		$this->assertSame( 'max-age=31536000', $method->invoke( $headers, 'max-age=31536000' ) );
+
+		$GLOBALS['siratik_baseline_test_filters'] = [ 'siratik_baseline_hsts_include_subdomains' => true ];
+		$this->assertSame( 'max-age=31536000; includeSubDomains', $method->invoke( $headers, 'max-age=31536000' ) );
+		$this->assertSame( 'max-age=1; includeSubDomains', $method->invoke( $headers, 'max-age=1; includeSubDomains' ) );
+		unset( $GLOBALS['siratik_baseline_test_filters'] );
+	}
+
+	/**
+	 * The legacy XSS auditor is turned off, not put in block mode.
+	 */
+	public function test_default_headers_turn_off_the_xss_auditor() {
+		$headers = ( new \ReflectionClassConstant( Headers::class, 'SECURITY_HEADERS' ) )->getValue();
+
+		$this->assertSame( '0', $headers['X-XSS-Protection'] );
+		$this->assertSame( 'max-age=31536000', $headers['Strict-Transport-Security'] );
+	}
 }
