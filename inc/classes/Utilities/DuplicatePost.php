@@ -215,11 +215,12 @@ class DuplicatePost
 	 */
 	protected function create_duplicate($post)
 	{
-		// Prepare post data
+		// Prepare post data. wp_insert_post() unslashes its input; slash the
+		// text first so backslashes (block attribute JSON) survive the copy.
 		$new_post_args = [
-			'post_title'   => $post->post_title . ' (Copy)',
-			'post_content' => $post->post_content,
-			'post_excerpt' => $post->post_excerpt,
+			'post_title'   => wp_slash($post->post_title . ' (Copy)'),
+			'post_content' => wp_slash($post->post_content),
+			'post_excerpt' => wp_slash($post->post_excerpt),
 			'post_status'  => 'draft', // Set as draft
 			'post_type'    => $post->post_type,
 			'post_author'  => get_current_user_id(),

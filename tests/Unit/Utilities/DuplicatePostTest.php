@@ -146,4 +146,43 @@ class DuplicatePostTest extends WPMockTestCase {
 		$this->assertArrayNotHasKey( '_edit_lock', $saved );
 		$this->assertSame( $json, $saved['settings_json'] ?? null );
 	}
+
+	/**
+	 * Title, content and excerpt are slashed for wp_insert_post(), which
+	 * unslashes them, so backslashes in block attribute JSON survive.
+	 */
+	public function test_duplicate_keeps_backslashes_in_post_fields() {
+		$content = '<!-- wp:kitaris/demo {"text":"say \\"hi\\""} /-->';
+		$post    = new \WP_Post( (object) [
+			'ID'           => 10,
+			'post_title'   => 'C:\\path',
+			'post_content' => $content,
+			'post_excerpt' => 'a\\b',
+			'post_type'    => 'post',
+			'post_parent'  => 0,
+			'menu_order'   => 0,
+		] );
+
+		WP_Mock::userFunction( 'get_current_user_id' )->andReturn( 1 );
+		WP_Mock::userFunction( 'wp_slash' )->andReturnUsing( static fn ( $value ) => addslashes( $value ) );
+		WP_Mock::userFunction( 'get_object_taxonomies' )->andReturn( [] );
+		WP_Mock::userFunction( 'get_post_meta' )->andReturn( [] );
+
+		$saved = [];
+		WP_Mock::userFunction( 'wp_insert_post' )->andReturnUsing(
+			static function ( $args ) use ( &$saved ) {
+				// What WordPress stores: wp_insert_post() unslashes its input.
+				$saved = array_map( static fn ( $value ) => is_string( $value ) ? stripslashes( $value ) : $value, $args );
+				return 20;
+			}
+		);
+
+		$method = new \ReflectionMethod( DuplicatePost::class, 'create_duplicate' );
+		$method->setAccessible( true );
+
+		$this->assertSame( 20, $method->invoke( new DuplicatePost(), $post ) );
+		$this->assertSame( $content, $saved['post_content'] );
+		$this->assertSame( 'C:\\path (Copy)', $saved['post_title'] );
+		$this->assertSame( 'a\\b', $saved['post_excerpt'] );
+	}
 }
