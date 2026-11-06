@@ -231,6 +231,19 @@ add_filter('siratik_baseline_login_security', '__return_false');
 add_filter('siratik_baseline_generic_login_errors', '__return_true');
 ```
 
+### Registration Spam
+
+When public registration is open, bots can sign up with a message or link as the username, and WordPress copies it into the "new user" email sent to the admin. When enabled (default), this package:
+
+- Leaves the username out of the admin's new-user email (it keeps the email address and adds a link to the user's profile)
+- Refuses usernames that contain `http` or `www.`, or have more than four words
+
+To disable this, use the following filter:
+
+```php
+add_filter('siratik_baseline_registration_security', '__return_false');
+```
+
 ### REST API User Endpoints
 
 REST API user endpoints are hidden by default from anyone without the `edit_posts` capability (the block editor needs them). To disable this restriction and make the user endpoint publicly accessible again use this filter:
