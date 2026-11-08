@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * ------------------------------------------------------------------
  * Duplicate Post Functionality
@@ -141,14 +143,17 @@ class DuplicatePost
 			return false;
 		}
 
-		$can = current_user_can('edit_post', $post->ID);
+		// A duplicate is a new post: the user must be able to edit the original
+		// and to create posts of this type (some types block creating items).
+		$can = current_user_can('edit_post', $post->ID)
+			&& current_user_can($post_type_object->cap->create_posts);
 
 		/**
 		 * Whether a specific post may be duplicated.
 		 *
 		 * Runs for both the list-table link and the duplicate admin action.
 		 *
-		 * @param bool     $can  Whether duplication is allowed. Default: edit_posts capability.
+		 * @param bool     $can  Whether duplication is allowed. Default: the user can edit the post and create posts of its type.
 		 * @param \WP_Post $post Post being duplicated.
 		 */
 		return (bool) apply_filters('siratik_baseline_can_duplicate_post', $can, $post);

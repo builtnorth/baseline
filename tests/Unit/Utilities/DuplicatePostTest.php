@@ -94,10 +94,14 @@ class DuplicatePostTest extends WPMockTestCase {
 
 		WP_Mock::userFunction( 'get_post_type_object' )
 			->with( 'post' )
-			->andReturn( (object) [ 'cap' => (object) [ 'edit_posts' => 'edit_posts' ] ] );
+			->andReturn( (object) [ 'cap' => (object) [ 'edit_posts' => 'edit_posts', 'create_posts' => 'edit_posts' ] ] );
 
 		WP_Mock::userFunction( 'current_user_can' )
 			->with( 'edit_post', 7 )
+			->andReturn( true );
+
+		WP_Mock::userFunction( 'current_user_can' )
+			->with( 'edit_posts' )
 			->andReturn( true );
 
 		WP_Mock::onFilter( 'siratik_baseline_can_duplicate_post' )
@@ -110,6 +114,40 @@ class DuplicatePostTest extends WPMockTestCase {
 		$result = $method->invoke( $duplicate_post, $post );
 
 		$this->assertTrue( $result );
+	}
+
+	/**
+	 * A duplicate is a new post: a user who can edit the original but cannot
+	 * create posts of its type is refused.
+	 */
+	public function test_can_duplicate_post_refuses_without_create_posts() {
+		$duplicate_post = new DuplicatePost();
+		$post            = (object) [
+			'ID'        => 9,
+			'post_type' => 'event',
+		];
+
+		WP_Mock::userFunction( 'get_post_type_object' )
+			->with( 'event' )
+			->andReturn( (object) [ 'cap' => (object) [ 'edit_posts' => 'edit_events', 'create_posts' => 'create_events' ] ] );
+
+		WP_Mock::userFunction( 'current_user_can' )
+			->with( 'edit_post', 9 )
+			->andReturn( true );
+
+		WP_Mock::userFunction( 'current_user_can' )
+			->with( 'create_events' )
+			->once()
+			->andReturn( false );
+
+		WP_Mock::onFilter( 'siratik_baseline_can_duplicate_post' )
+			->with( false, $post )
+			->reply( false );
+
+		$method = new \ReflectionMethod( DuplicatePost::class, 'can_duplicate_post' );
+		$method->setAccessible( true );
+
+		$this->assertFalse( $method->invoke( $duplicate_post, $post ) );
 	}
 
 	/**
