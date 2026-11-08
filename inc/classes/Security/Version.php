@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * ------------------------------------------------------------------
  * Version
@@ -23,7 +25,7 @@ class Version
 	 */
 	public function init()
 	{
-		// Hide the WordPress version (generator, admin footer, core asset URLs).
+		// Hide the WordPress version (generator, admin footer version, core asset URLs).
 		if (! apply_filters('siratik_baseline_hide_wp_version', true)) {
 			return;
 		}
@@ -43,11 +45,12 @@ class Version
 	}
 
 	/**
-	 * Remove the WordPress version from the footer.
+	 * Remove the WordPress version from the admin footer (the right side,
+	 * "Version x.y"). The left side ("Thank you for creating with WordPress.")
+	 * carries no version, so it is left alone for white label or core.
 	 */
 	public function remove_wp_version_footer()
 	{
-		add_filter('admin_footer_text', '__return_empty_string', 11);
 		add_filter('update_footer', '__return_empty_string', 11);
 	}
 
@@ -56,6 +59,11 @@ class Version
 	 */
 	public function replace_wp_version_in_files($src)
 	{
+		// Another filter may hand over a non-string (e.g. false to drop the asset).
+		if (! is_string($src)) {
+			return $src;
+		}
+
 		if (strpos($src, 'ver=')) {
 			$version = $this->get_query_arg_value('ver', $src);
 			if ($version === get_bloginfo('version')) {
@@ -93,8 +101,8 @@ class Version
 		$seed = (string) get_bloginfo('version');
 
 		$asset_version_constant = apply_filters('siratik_baseline_asset_version_constant', '');
-		if ($asset_version_constant !== '' && defined($asset_version_constant)) {
-			$seed .= '|' . constant($asset_version_constant);
+		if (is_string($asset_version_constant) && $asset_version_constant !== '' && defined($asset_version_constant)) {
+			$seed .= '|' . (string) constant($asset_version_constant);
 		}
 
 		$salt = function_exists('wp_salt') ? wp_salt('nonce') : (defined('NONCE_SALT') ? NONCE_SALT : '');
