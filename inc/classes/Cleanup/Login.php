@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * ------------------------------------------------------------------
  * Login
@@ -60,18 +62,24 @@ class Login
 	}
 
 	/**
-	 * Update login logo link URL
+	 * Link the logo to the site, when it shows the site's logo.
+	 *
+	 * @param mixed $url Core's link (wordpress.org).
+	 * @return mixed
 	 */
-	public function update_login_logo_url()
+	public function update_login_logo_url($url)
 	{
-		return home_url();
+		return has_custom_logo() ? home_url() : $url;
 	}
 
 	/**
-	 * Update login logo link title
+	 * Title the logo with the site name, when it shows the site's logo.
+	 *
+	 * @param mixed $text Core's text ("Powered by WordPress").
+	 * @return mixed
 	 */
-	public function update_login_logo_text()
+	public function update_login_logo_text($text)
 	{
-		return get_option("blogname");
+		return has_custom_logo() ? esc_html((string) get_option('blogname')) : $text;
 	}
 }
