@@ -50,6 +50,8 @@ class XMLRPC
 		add_filter('pre_update_option_enable_xmlrpc', '__return_false');
 		add_filter('pre_option_enable_xmlrpc', '__return_zero');
 		add_filter('wp_headers', [$this, 'remove_xmlrpc_headers']);
+		// The RSD link in the head advertises the endpoint blocked above.
+		remove_action('wp_head', 'rsd_link');
 	}
 
 	/**

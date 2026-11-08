@@ -40,6 +40,8 @@ namespace Siratik\Baseline\Security {
 		// Hook registrations are recorded so tests can assert them.
 		function add_action(...$args) { $GLOBALS['siratik_baseline_test_hooks'][] = ['action', ...$args]; return null; }
 		function add_filter(...$args) { $GLOBALS['siratik_baseline_test_hooks'][] = ['filter', ...$args]; return null; }
+		// Removals are recorded so tests can assert them.
+		function remove_action(...$args) { $GLOBALS['siratik_baseline_test_removed'][] = ['action', ...$args]; return null; }
 		// Tests can force a filter's result via $GLOBALS['siratik_baseline_test_filters'][ $hook ].
 		function apply_filters($hook, $value = null) {
 			$forced = $GLOBALS['siratik_baseline_test_filters'] ?? [];

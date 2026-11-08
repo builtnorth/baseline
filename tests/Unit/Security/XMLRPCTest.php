@@ -18,7 +18,7 @@ use WP_Mock;
 class XMLRPCTest extends WPMockTestCase {
 
 	public function tearDown(): void {
-		unset( $GLOBALS['siratik_baseline_test_hooks'], $GLOBALS['siratik_baseline_test_filters'] );
+		unset( $GLOBALS['siratik_baseline_test_hooks'], $GLOBALS['siratik_baseline_test_filters'], $GLOBALS['siratik_baseline_test_removed'] );
 		parent::tearDown();
 	}
 
@@ -47,6 +47,29 @@ class XMLRPCTest extends WPMockTestCase {
 		$this->assertContains( [ 'filter', 'wp_xmlrpc_server_class', [ $xmlrpc, 'disabled_server_class' ], PHP_INT_MAX ], $hooks );
 		$this->assertContains( [ 'filter', 'xmlrpc_enabled', '__return_false', PHP_INT_MAX ], $hooks );
 		$this->assertContains( [ 'action', 'init', [ $xmlrpc, 'refuse_xmlrpc_request' ], 0 ], $hooks );
+	}
+
+	/**
+	 * While blocked, the RSD link no longer advertises the endpoint in the head.
+	 */
+	public function test_blocked_removes_the_rsd_link(): void {
+		$GLOBALS['siratik_baseline_test_removed'] = [];
+
+		( new XMLRPC() )->init();
+
+		$this->assertContains( [ 'action', 'wp_head', 'rsd_link' ], $GLOBALS['siratik_baseline_test_removed'] );
+	}
+
+	/**
+	 * While not blocked (a plugin needs XML-RPC), the RSD link stays.
+	 */
+	public function test_not_blocked_keeps_the_rsd_link(): void {
+		$GLOBALS['siratik_baseline_test_filters']['siratik_baseline_xmlrpc_required'] = true;
+		$GLOBALS['siratik_baseline_test_removed']                                     = [];
+
+		( new XMLRPC() )->init();
+
+		$this->assertSame( [], $GLOBALS['siratik_baseline_test_removed'] );
 	}
 
 	/**
