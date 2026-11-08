@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * ------------------------------------------------------------------
  * Mail
@@ -44,9 +46,22 @@ class Mail
 	/**
 	 * Change WP Mail from name
 	 */
-	public function mail_from_name()
+	/**
+	 * Replace WordPress's default From name ("WordPress") with the site name.
+	 * A name set on purpose (a From header, a mail plugin) is left alone.
+	 *
+	 * @param mixed $from_name The From name so far.
+	 * @return mixed
+	 */
+	public function mail_from_name($from_name)
 	{
-		return get_option("blogname");
+		if ($from_name !== 'WordPress') {
+			return $from_name;
+		}
+
+		$site_name = wp_specialchars_decode((string) get_option('blogname'), ENT_QUOTES);
+
+		return $site_name !== '' ? $site_name : $from_name;
 	}
 
 	/**
