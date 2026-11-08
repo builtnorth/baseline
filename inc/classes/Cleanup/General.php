@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * ------------------------------------------------------------------
  * General
@@ -23,7 +25,8 @@ class General
 	 */
 	public function init()
 	{
-		// Remove generator, feed, RSD, wlwmanifest and rel links from wp_head.
+		// Remove legacy links from wp_head: wlwmanifest and the index, start,
+		// parent and adjacent-post rel links.
 		if (! apply_filters('siratik_baseline_clean_head', true)) {
 			return;
 		}
@@ -33,21 +36,20 @@ class General
 
 
 	/**
-	 * Remove unnecessary code from wp_head
+	 * Remove legacy links from wp_head.
+	 *
+	 * Feed links stay: feed readers find the site's RSS through them. The
+	 * generator tag is left to the version switch (Security\Version) and the
+	 * RSD link to the XML-RPC switch (Security\XMLRPC).
 	 */
 	public function remove_actions_from_head()
 	{
-		remove_action('wp_head', 'rsd_link');
-		remove_action('wp_head', 'wp_generator');
-		remove_action('wp_head', 'feed_links', 2);
-		remove_action('wp_head', 'index_rel_link');
 		remove_action('wp_head', 'wlwmanifest_link');
-		remove_action('wp_head', 'start_post_rel_link');
 		remove_action('wp_head', 'index_rel_link');
-		remove_action('wp_head', 'adjacent_posts_rel_link');
-		remove_action('wp_head', 'feed_links_extra', 3);
+		remove_action('wp_head', 'start_post_rel_link');
 		remove_action('wp_head', 'start_post_rel_link', 10, 0);
 		remove_action('wp_head', 'parent_post_rel_link', 10, 0);
+		remove_action('wp_head', 'adjacent_posts_rel_link');
 		remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0);
 	}
 }
